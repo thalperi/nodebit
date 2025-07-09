@@ -1,4 +1,4 @@
-**Nodebit** is a **single npm package** containing both Admin and Client Node‑RED nodes for integrating OrbitDB into the Node Red environment.
+**Nodebit** is a **single npm package** containing both Admin and Client Node‑RED nodes for integrating OrbitDB into the Node Red environment. This suite separates responsibilities into two coordinated components: Admin for managing configuration and metadata, and Client for executing operations within flows.
 
 ---
 
