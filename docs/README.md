@@ -8,6 +8,7 @@
 - Maintain professional, direct communication focused on facts
 - Respect established documentation structure and organization
 - Throughout the entire development lifecycle, always propose modifications to the documentation structure affecting even folders, files, logical layout, and compositional formatting, to ensure it always best reflects the current and actual codebase
+- **DO NOT create new documentation files without explicit user permission** - Use only the existing documentation structure provided by the user
 - **Testing Capability**: You can start and manage your own Node-RED instance on port 1881 for testing purposes, as the user will always occupy the default port 1880. Use this dedicated testing environment to:
   - Start `node-red -p 1881` when needed for testing
   - Use API endpoints to test functionality and verify changes

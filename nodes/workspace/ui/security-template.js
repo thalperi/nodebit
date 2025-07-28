@@ -11,8 +11,8 @@ function generateSecurityTemplate() {
             
             <div style="
                 display: grid;
-                grid-template-columns: 1fr 198px;
-                grid-template-rows: auto auto;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
                 gap: 12px;
                 padding: 12px;
                 background: #f8f9fa;
@@ -30,8 +30,8 @@ function generateSecurityTemplate() {
 
 function generateDIDManagementArea() {
     return `
-        <!-- DID Management Area - Grid Position: Column 1, Row 1 -->
-        <div class="did-management-area" style="grid-column: 1; grid-row: 1; min-height: 720px; overflow: hidden;">
+        <!-- DID Management Area - Grid Position: Row 1 -->
+        <div class="did-management-area" style="grid-row: 1; min-height: 400px; overflow: hidden;">
             ${generateDIDContainer()}
         </div>
     `;
@@ -39,8 +39,8 @@ function generateDIDManagementArea() {
 
 function generateACLManagementArea() {
     return `
-        <!-- ACL Management Area - Grid Position: Column 1, Row 2 -->
-        <div class="acl-management-area" style="grid-column: 1; grid-row: 2; min-height: 450px;">
+        <!-- ACL Management Area - Grid Position: Row 2 -->
+        <div class="acl-management-area" style="grid-row: 2; min-height: 300px;">
             <div style="background:#fff; border:1px solid #ddd; border-radius:4px; display:grid; grid-template-rows:auto 1fr; height:100%;">
                 <div style="background:#f8f9fa; padding:8px 12px; border-bottom:1px solid #ddd; font-weight:bold; font-size:14px;">
                     <i class="fa fa-shield-alt" style="margin-right:6px;"></i>Access Control Lists (ACLs)
@@ -172,10 +172,15 @@ function generateSystemStatusCard() {
 
 function generateSystemStatusSidebar() {
     return `
-        <!-- System Status Sidebar - Grid Position: Column 2, spans both rows -->
-        <div class="system-status-sidebar" style="grid-column: 2; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 8px; width: 198px; min-height: 700px;">
-            ${generateSystemStatusCard()}
-            ${generateSecurityInfoCard()}
+        <!-- System Status Sidebar - Grid Position: Row 3 -->
+        <div class="system-status-sidebar" style="grid-row: 3; min-height: 200px;">
+            <div style="background:#fff; border:1px solid #ddd; border-radius:4px; padding:12px; height:100%;">
+                <div style="background:#f8f9fa; padding:8px 12px; border-bottom:1px solid #ddd; font-weight:bold; font-size:14px; margin:-12px -12px 12px -12px;">
+                    <i class="fa fa-cog" style="margin-right:6px;"></i>System Status
+                </div>
+                ${generateSystemStatusCard()}
+                ${generateSecurityInfoCard()}
+            </div>
         </div>
     `;
 }

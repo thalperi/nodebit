@@ -92,6 +92,12 @@ By the end of this guide, you'll be able to:
 The Distributed Dashboard provides a comprehensive interface for managing decentralized data with five main tabs:
 
 ### Tab Structure
+All tabs follow a consistent layout pattern:
+1. **Header Banner** - Blue background with tab title
+2. **Content Area** - Single column layout with no decorative elements
+3. **Responsive Design** - Adapts to available space
+
+### Tab Overview
 1. **Workspace Overview** - Central dashboard showing:
    - IPFS Networks count and status
    - OrbitDB Databases count and status  
@@ -103,6 +109,12 @@ The Distributed Dashboard provides a comprehensive interface for managing decent
 3. **Databases** - OrbitDB database operations and management
 4. **Files** - IPFS file operations and management
 5. **Security** - DID/ACL management and security features
+
+### Layout Design Principles
+- **No decorative columns** - Content starts immediately after headers
+- **Titles as banners only** - Never appear as columns or decorative elements
+- **Consistent structure** - All tabs use the same layout pattern
+- **Clean interface** - No unwanted visual elements or colored bars
 
 ### Overview Dashboard
 The overview provides a basic view of your decentralized infrastructure:
