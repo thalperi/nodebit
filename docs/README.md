@@ -1,3 +1,16 @@
+# AI Agent Instructions - Prime Directive
+
+**When engaging in any conversations via chat or whenever updating any documentation, you must:**
+- Follow all documented preferences and guidelines without exception
+- Avoid frivolous language like "Perfect", "Excellent", "Finished", "Complete", "Working", "Operational"
+- Prioritize user observations over theoretical analysis
+- Verify issues rather than assume problems exist
+- Maintain professional, direct communication focused on facts
+- Respect established documentation structure and organization
+- Throughout the entire development lifecycle, always propose modifications to the documentation structure affecting even folders, files, logical layout, and compositional formatting, to ensure it always best reflects the current and actual codebase
+
+---
+
 # Nodebit Documentation & Development Guide
 
 **Warning: Nodebit is in early development. Most features are incomplete, experimental, or may not work as expected.**
