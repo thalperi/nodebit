@@ -171,54 +171,13 @@ Currently, all operations use mock data to demonstrate functionality:
 - **Network Discovery**: Automatic IPFS node detection and connection
 - **Advanced Security**: DID/ACL system with decentralized identity management
 
-## 🔍 Development & Debugging Environment
 
-### Activity Logging System
-Nodebit uses an internal activity logging system for all debugging and verification. **Never use `console.log()`** - instead, use the workspace activity logging system:
-
-**For debugging and verification:**
-```javascript
-// ✅ CORRECT: Use activity logging
-fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: 'Your debug message here' })
-});
-
-// ❌ WRONG: Never use console.log
-console.log('This will not be visible in the activity log');
-```
-
-**How to check activity logs:**
-1. Open Node-RED workspace properties
-2. Click "Open Workspace Admin" 
-3. Check the "Recent Activity" section for all logged messages
-
-**Activity logging endpoints:**
-- `/api/test-log` - General debugging and verification messages
-- `/api/log-debug` - Debug-level messages
-- `/api/activity` - View all activity records
-- `/api/activity/stats` - Activity statistics
-
-### Development Guidelines
-- **Always use activity logging** for debugging and verification
-- **Check Recent Activity** in workspace admin for diagnostic information
-- **No console.log statements** - they won't be visible in the activity system
-- **Activity logs persist** across sessions and provide historical debugging data
 
 ## 🤝 Contributing
 
 We welcome contributions! The current demo implementation provides a solid foundation for adding real IPFS and OrbitDB functionality.
 
-### Development Setup
-```bash
-git clone https://github.com/nodebit/nodebit
-cd nodebit
-npm install
-npm link
-cd ~/.node-red
-npm link nodebit
-```
+**For developers:** See the **[Development Guide](docs/technical/development-guide.md)** for detailed setup instructions, debugging workflow, and activity logging system.
 
 ### Key Areas for Contribution
 1. **IPFS Integration**: Replace mock file operations with real Helia calls
