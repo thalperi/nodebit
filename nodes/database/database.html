@@ -1,0 +1,106 @@
+<!-- nb-database Node UI - Simplified Version -->
+
+<script type="text/html" data-template-name="nb-database">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Database Operations">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-workspace"><i class="fa fa-cube"></i> Workspace</label>
+        <input type="text" id="node-input-workspace">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-operation"><i class="fa fa-cog"></i> Operation</label>
+        <select id="node-input-operation">
+            <option value="auto">Auto-detect from message</option>
+            <option value="create">Create database (demo)</option>
+            <option value="write">Write data (demo)</option>
+            <option value="read">Read data (demo)</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-databaseName">Database Name</label>
+        <input type="text" id="node-input-databaseName" placeholder="my-database">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-databaseType">Database Type</label>
+        <select id="node-input-databaseType">
+            <option value="documents">Documents (JSON)</option>
+            <option value="keyvalue">Key-Value</option>
+            <option value="eventlog">Event Log</option>
+        </select>
+    </div>
+    
+    <div class="form-row" style="background:#e8f4fd; padding:10px; border-radius:4px; margin-top:20px;">
+        <strong>🚧 Demo Mode</strong><br>
+        This node simulates OrbitDB operations for testing flows. It will:
+        <ul style="margin:5px 0 0 20px;">
+            <li>Generate mock database addresses</li>
+            <li>Store data in memory (not persistent)</li>
+            <li>Show proper message formats</li>
+        </ul>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="nb-database">
+    <p>The <strong>nb-database</strong> node provides access to OrbitDB databases (demo mode).</p>
+    
+    <h3>Demo Mode</h3>
+    <p>This version simulates OrbitDB operations for testing:</p>
+    <ul>
+        <li>Create: Returns mock database addresses</li>
+        <li>Write: Stores data in memory</li>
+        <li>Read: Returns stored demo data</li>
+    </ul>
+    
+    <h3>Input Examples</h3>
+    <h4>Create a database</h4>
+    <pre>msg.operation = "create"
+msg.databaseName = "my-app-data"</pre>
+    
+    <h4>Write data</h4>
+    <pre>msg.payload = {
+  name: "John Doe",
+  email: "john@example.com"
+}</pre>
+    
+    <h4>Read data</h4>
+    <pre>msg.operation = "read"</pre>
+    
+    <h3>Output</h3>
+    <p>Returns demo database operations with proper structure for testing flows.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('nb-database', {
+        category: 'nodebit',
+        color: '#9B59B6',
+        defaults: {
+            name: { value: "" },
+            workspace: { value: "", type: "nb-workspace", required: true },
+            operation: { value: "auto" },
+            databaseName: { value: "" },
+            databaseType: { value: "documents" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-database",
+        label: function() {
+            return this.name || "nb-database (demo)";
+        },
+        
+        oneditprepare: function() {
+            $("#node-input-name").val(this.name || "");
+            $("#node-input-operation").val(this.operation || "auto");
+            $("#node-input-databaseName").val(this.databaseName || "");
+            $("#node-input-databaseType").val(this.databaseType || "documents");
+            
+            // Workspace is automatically handled by Node-RED as a config node reference
+            // No special setup needed - Node-RED will show a dropdown with pencil icon
+        }
+    });
+</script>

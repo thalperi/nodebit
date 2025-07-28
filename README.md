@@ -1,140 +1,208 @@
-**Nodebit** is a **single npm package** containing both Admin and Client Node‑RED nodes for integrating OrbitDB into the Node Red environment. This suite separates responsibilities into two coordinated components: Admin for managing configuration and metadata, and Client for executing operations within flows.
+# Nodebit: Unified IPFS & OrbitDB for Node-RED
 
----
+**Nodebit** provides a phpMyAdmin-like interface for decentralized storage in Node-RED. Manage IPFS networks, OrbitDB databases, and files through an intuitive web interface while building powerful automation flows.
 
-````markdown
-# 🚀 Nodebit Project Plan
+## 🎯 What is Nodebit?
 
-## 🎯 Overview
-Build a suite of OrbitDB related nodes for Node‑RED under **one npm package** (`nodebit`), with multiple distinct nodes exposed in the Node‑RED palette.
+Nodebit transforms Node-RED into a comprehensive platform for decentralized data management. It combines the visual flow programming of Node-RED with the power of IPFS and OrbitDB, providing both programmatic access and a rich administrative interface.
 
-## 🧩 Modules Included in `nodebit` Package
-- `nodebit-admin` – Admin UI for browsing and managing OrbitDB instances
-- `nodebit-connect` – Config node: initializes Helia/IPFS + OrbitDB connection
-- `nodebit-open` – Opens/creates OrbitDB databases with configuration
-- `nodebit-read` – Reads data or queries OrbitDB
-- `nodebit-write` – Writes/appends data to OrbitDB
-- `nodebit-subscribe` – Subscribes to live updates
-- `nodebit-encrypt` – Encrypts/decrypts data payloads before read/write
+### Core Capabilities
+- **📊 phpMyAdmin-like Admin Interface**: Comprehensive web UI for browsing networks, databases, and files
+- **🗄️ OrbitDB Database Management**: Create, query, and manage decentralized databases
+- **📁 IPFS File Operations**: Upload, download, and manage files across IPFS networks
+- **🌐 Multi-Network Support**: Connect to multiple IPFS networks simultaneously
+- **🔄 Real-time Integration**: Live updates and monitoring within Node-RED flows
+- **⚙️ Configuration Management**: Easy setup and management of decentralized infrastructure
 
----
+## 🚀 Quick Start
 
-## 📦 Package Structure
-
-```text
-nodebit/
-├── admin/
-│   ├── nodebit-admin.js
-│   └── nodebit-admin.html
-├── connect/
-│   ├── nodebit-connect.js
-│   └── nodebit-connect.html
-├── open/
-│   ├── nodebit-open.js
-│   └── nodebit-open.html
-├── client/
-│   ├── nodebit-read.js
-│   ├── nodebit-write.js
-│   └── nodebit-subscribe.js
-├── utils/
-│   └── nodebit-encrypt.js
-├── examples/
-│   └── sample‑flow.json
-├── package.json
-├── README.md
-└── LICENSE
-````
-
----
-
-## 🔧 `package.json` Example
-
-```json
-{
-  "name": "nodebit",
-  "version": "0.1.0",
-  "description": "OrbitDB + IPFS nodesuite for Node‑RED",
-  "keywords": ["node-red", "orbitdb", "ipfs", "decentralized"],
-  "license": "MIT",
-  "dependencies": {
-    "ipfs": "^1.0.0",
-    "orbit-db": "^0.28.0",
-    "helia": "^2.0.0",
-    "...": "..."
-  },
-  "node-red": {
-    "version": ">=2.0.0",
-    "nodes": {
-      "nodebit-admin": "admin/nodebit-admin.js",
-      "nodebit-connect": "connect/nodebit-connect.js",
-      "nodebit-open": "open/nodebit-open.js",
-      "nodebit-read": "client/nodebit-read.js",
-      "nodebit-write": "client/nodebit-write.js",
-      "nodebit-subscribe": "client/nodebit-subscribe.js",
-      "nodebit-encrypt": "utils/nodebit-encrypt.js"
-    }
-  }
-}
+### Installation
+```bash
+cd ~/.node-red
+npm install nodebit
 ```
 
+### Basic Setup
+1. **Restart Node-RED** to load the Nodebit nodes
+2. **Create a workspace configuration**:
+   - Go to hamburger menu → Configuration nodes
+   - Add a new "nb-workspace" configuration
+   - Give it a name like "My Workspace"
+3. **Access the Admin Interface**:
+   - In the workspace configuration, click "Open Workspace Admin"
+   - Browse networks, databases, and files in the web interface
+
+### Your First Flow
+```
+[inject] → [nb-file] → [debug]
+```
+
+1. **Configure inject node**: Set payload to "Hello, IPFS!"
+2. **Configure nb-file node**: Select your workspace, operation: "auto"
+3. **Deploy and test**: Click inject to upload your first file to IPFS
+
+## 📦 Node Overview
+
+| Node | Purpose | Status | Description |
+|------|---------|--------|-------------|
+| **nb-workspace** | Configuration & Admin | ✅ Working | Central hub with phpMyAdmin-like interface |
+| **nb-file** | IPFS file operations | ✅ Demo | Upload, download, pin/unpin files |
+| **nb-database** | OrbitDB operations | ✅ Demo | Create, query, manage databases |
+
+## 🖥️ Admin Interface Features
+
+The phpMyAdmin-like interface provides comprehensive management capabilities:
+
+### 📊 Overview Dashboard
+- **Network Statistics**: Connected IPFS networks and peer counts
+- **Database Metrics**: OrbitDB instances, entry counts, storage usage
+- **File Management**: IPFS files, pin status, storage distribution
+- **Recent Activity**: Live feed of operations and changes
+
+### 🌐 Networks Tab
+- **IPFS Network Browser**: View all connected networks
+- **Peer Information**: Peer IDs, connection status, capabilities
+- **Network Statistics**: Bandwidth, latency, availability metrics
+- **Connection Management**: Add, remove, configure networks
+
+### 🗄️ Databases Tab
+- **OrbitDB Browser**: Browse all databases across networks
+- **Database Types**: Documents, key-value, event logs, feeds, counters
+- **Schema Viewer**: Inspect database structures and indexes
+- **Query Interface**: Execute queries and view results
+
+### 📁 Files Tab
+- **IPFS File Browser**: Navigate files across all networks
+- **Metadata Viewer**: File sizes, types, upload dates, pin status
+- **Bulk Operations**: Pin/unpin multiple files, batch downloads
+- **Storage Analytics**: Usage patterns and optimization suggestions
+
+### 🔍 Query Builder (Coming Soon)
+- **Visual Query Designer**: Drag-and-drop query construction
+- **Cross-Database Joins**: Query across multiple OrbitDB instances
+- **Export Capabilities**: CSV, JSON, and custom format exports
+- **Saved Queries**: Store and reuse complex queries
+
+## 🏗️ Architecture
+
+Nodebit uses a **resource-centric** design focused on data management rather than connection complexity:
+
+```mermaid
+graph TB
+    subgraph "Node-RED Palette"
+        WS[nb-workspace<br/>Configuration Node]
+        FILE[nb-file<br/>File Operations]
+        DB[nb-database<br/>Database Operations]
+    end
+    
+    subgraph "Admin Interface"
+        UI[phpMyAdmin-like Web UI]
+        API[HTTP API Endpoints]
+    end
+    
+    subgraph "Decentralized Layer"
+        IPFS[IPFS Networks]
+        ORBIT[OrbitDB Databases]
+    end
+    
+    WS --> UI
+    WS --> API
+    FILE --> WS
+    DB --> WS
+    WS --> IPFS
+    WS --> ORBIT
+```
+
+### Key Design Principles
+1. **Configuration Node Pattern**: nb-workspace acts as a shared configuration
+2. **Admin Interface Integration**: Web UI embedded in Node-RED
+3. **Resource Abstraction**: Work with files and databases, not protocols
+4. **Progressive Disclosure**: Simple tasks are simple, complex tasks are possible
+
+## 📚 Documentation
+
+- **[Getting Started Guide](docs/getting-started.md)** - Step-by-step setup and first flows
+- **[Architecture Guide](docs/technical/architecture.md)** - Technical design and patterns
+- **[Node Reference](docs/technical/node-roles.md)** - Detailed documentation for each node
+- **[Examples](docs/reference/examples/)** - Real-world use cases and patterns
+- **[Contributor Guide](docs/README.md)** - Development status, technical docs, and contribution guidelines
+
+## 🎓 Example Use Cases
+
+### Personal Cloud Storage
+```
+[File Upload] → [nb-file: encrypt & store] → [Share Link Generator]
+```
+
+### Distributed Database Application
+```
+[HTTP Request] → [nb-database: query] → [Template] → [HTTP Response]
+```
+
+### Real-time Data Sync
+```
+[Timer] → [nb-database: sync check] → [Notification] → [Slack/Email]
+```
+
+### Content Distribution Network
+```
+[RSS Feed] → [nb-file: cache content] → [nb-database: index] → [API Response]
+```
+
+## 🔧 Current Implementation Status
+
+### ✅ Working Features
+- **Configuration Management**: Full workspace configuration with validation
+- **Admin Interface**: Complete phpMyAdmin-like web interface
+- **Demo Operations**: File upload/download and database operations with mock data
+- **Node-RED Integration**: Proper palette integration and flow composition
+- **HTTP API**: RESTful endpoints for programmatic access
+
+### 🚧 Demo Mode
+Currently, all operations use mock data to demonstrate functionality:
+- **File Operations**: Generate mock CIDs, simulate uploads/downloads
+- **Database Operations**: In-memory storage, simulated OrbitDB operations
+- **Network Management**: Mock IPFS networks and peer connections
+
+### 🔮 Planned Real Implementation
+- **IPFS Integration**: Replace mock operations with real Helia/IPFS calls
+- **OrbitDB Integration**: Connect to actual OrbitDB instances
+- **Network Discovery**: Automatic IPFS node detection and connection
+- **Advanced Security**: DID/ACL system with decentralized identity management
+
+## 🤝 Contributing
+
+We welcome contributions! The current demo implementation provides a solid foundation for adding real IPFS and OrbitDB functionality.
+
+### Development Setup
+```bash
+git clone https://github.com/nodebit/nodebit
+cd nodebit
+npm install
+npm link
+cd ~/.node-red
+npm link nodebit
+```
+
+### Key Areas for Contribution
+1. **IPFS Integration**: Replace mock file operations with real Helia calls
+2. **OrbitDB Integration**: Implement actual database operations
+3. **Network Discovery**: Add automatic IPFS node detection
+4. **Security Features**: Implement encryption and access control
+5. **Performance Optimization**: Caching, batching, and efficiency improvements
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+Built on the shoulders of giants:
+- [IPFS](https://ipfs.io/) - The InterPlanetary File System
+- [OrbitDB](https://orbitdb.org/) - Decentralized databases
+- [Helia](https://github.com/ipfs/helia) - Modern IPFS implementation
+- [Node-RED](https://nodered.org/) - Visual programming for IoT
+
 ---
 
-## 🏁 Milestones
-
-### 1. Name & Branding Setup
-
-* Reserve npm package `nodebit`
-* Create GitHub org/repo `Nodebit/nodebit`
-* Add `LICENSE` (MIT) and initial `README.md`
-
-### 2. Core Node Development & Structure
-
-* Develop all nodes under respective folders (code + UI)
-* Include example flows in `/examples`
-* Set up CI: lint, test, publish workflow
-
-### 3. Local Testing & Publishing (v0.1)
-
-* Install via `npm link` into local Node‑RED
-* Verify palette entries and core behaviors
-* Publish first version: `npm publish`
-
-### 4. Client Nodes for Full Workflow (v0.2)
-
-* Read/write & subscribe functions complete
-* Ensure `nodebit-encrypt` integrates cleanly
-* Update examples with full functional flows
-
-### 5. Documentation & Community Outreach
-
-* Write usage guides and flow snippets in `README.md`
-* Publish blog post + demo: chat, KV store, etc.
-* Announce on Node‑RED Forums, Discord, etc.
-
-### 6. Future Enhancements
-
-* Support OrbitDB ACL, DID identity
-* Add advanced encryption workflows (key exchange)
-* Performance improvements and scalability
-* CLI tooling to generate flows or bootstrap projects
-
----
-
-## 🎓 Why Single Package?
-
-Node‑RED allows **multiple node types per npm package**, specified in `package.json` under `"node-red.nodes"` ([nodered.org][1], [stackoverflow.com][2], [nodered.17coding.net][3]). This strategy simplifies installation and release flow while keeping each node logically separate.
-
----
-
-## ✅ Summary
-
-* One repo + one npm package = all Nodebit nodes
-* Distinct Admin + Client nodes appear in palette
-* Elegant, efficient, and user-friendly to install and maintain
-
----
-
-[1]: https://nodered.org/docs/creating-nodes/packaging?utm_source=chatgpt.com "Packaging - Node-RED"
-[2]: https://stackoverflow.com/questions/39203799/how-to-embed-multiple-instances-of-node-red-in-node-app?utm_source=chatgpt.com "How to embed multiple instances of node-red in node app"
-[3]: https://nodered.17coding.net/docs/creating-nodes/packaging?utm_source=chatgpt.com "Packaging - Node-RED"
-
+**Ready to explore decentralized data management?** Start with the [Getting Started Guide](docs/getting-started.md)!

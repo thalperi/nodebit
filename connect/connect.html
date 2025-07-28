@@ -1,0 +1,887 @@
+<script type="text/html" data-template-name="nb-connect">
+    <div id="discovery-selection-view" class="node-form-row">
+        <div class="form-row">
+            <label for="node-input-name"><i class="fa fa-tag"></i> Name:</label>
+            <input type="text" id="node-input-name" placeholder="Name">
+        </div>
+
+        <div class="form-row">
+            <label for="node-input-orbitDbPath"><i class="fa fa-database"></i> OrbitDB Path:</label>
+            <input type="text" id="node-input-orbitDbPath" placeholder="./orbitdb">
+        </div>
+
+
+        <div id="available-ipfs-nodes-grid-container" class="details-grid-section">
+            <div class="grid-section-header">
+                <label>Available IPFS Instances:</label>
+                <div class="node-input-connection-toggle-wrapper">
+                    <input type="checkbox" id="node-input-connection-toggle" class="node-input-connection-toggle">
+                    <label for="node-input-connection-toggle" class="node-input-connection-toggle-label"></label>
+                </div>
+                <div class="search-input-wrapper">
+                    <label for="node-input-search-available-nodes"><i class="fa fa-search"></i></label>
+                    <input type="text" id="node-input-search-available-nodes" placeholder="Search by Peer ID or Agent v.">
+                </div>
+            </div>
+            <div class="grid-header">
+                <div class="grid-column-header">API URL</div>
+                <div class="grid-column-header">Agent v.</div>
+                <div class="grid-column-header">Peer ID</div>
+                <div class="grid-column-header"></div> <!-- For clipboard icon -->
+            </div>
+            <div id="available-ipfs-nodes-grid-body" class="grid-body">
+                <!-- Available IPFS nodes will be populated here -->
+                <div class="loading-spinner">
+                    <i class="fa fa-spinner fa-spin"></i> Searching for local IPFS nodes...
+                </div>
+            </div>
+            <div class="grid-footer">
+                <label for="node-input-manualIpfsApiUrl"><i class="fa fa-link"></i> Manual API URL:</label>
+                <input type="text" id="node-input-manualIpfsApiUrl" placeholder="http://localhost:5001/api/v0">
+                <button id="node-button-manual-connect" class="red-ui-button"><i class="fa fa-plug"></i> Connect Manually</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dual-tab-ui-container" class="custom-node-tabs-container" style="display: none;">
+        <div class="custom-tab-headers">
+            <div class="custom-tab-header active" data-tab="config">Configuration</div>
+            <div class="custom-tab-header" data-tab="details">Details</div>
+        </div>
+        <div class="custom-tab-content-container">
+            <div id="custom-tab-config" class="custom-tab-content active">
+                <div class="details-grid-section">
+                    <label for="node-input-connectedIpfsApiUrl" id="label-connectedIpfsApiUrl"><i class="fa fa-link"></i> Connected API URL:</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <input type="text" id="node-input-connectedIpfsApiUrl" readonly class="node-property-value">
+                    </div>
+                </div>
+            </div>
+            <div id="custom-tab-details" class="custom-tab-content">
+                <div class="details-grid-section">
+                    <label>Peer ID:</label>
+                    <div class="node-property-value-wrapper">
+                        <span id="node-input-peerId" class="node-property-value"></span>
+                        <button class="copy-button" data-target="node-input-peerId"><i class="fa fa-clipboard"></i></button>
+                    </div>
+                    <label>Public Key:</label>
+                    <div class="node-property-value-wrapper">
+                        <span id="node-input-ipfsPublicKey" class="node-property-value"></span>
+                        <button class="copy-button" data-target="node-input-ipfsPublicKey"><i class="fa fa-clipboard"></i></button>
+                    </div>
+                </div>
+
+                <div class="details-grid-section version-details-grid-container">
+                    <label>Agent :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsAgentVersion" class="node-property-value"></span>
+                    </div>
+                    <label>Max Memory:</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsMaxMemory" class="node-property-value"></span>
+                    </div>
+
+                    <label>Protocol :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsProtocolVersion" class="node-property-value"></span>
+                    </div>
+                    <label>Max File Descriptors:</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsMaxFileDescriptors" class="node-property-value"></span>
+                    </div>
+
+                    <label>Kubo :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsKuboVersion" class="node-property-value"></span>
+                    </div>
+                    <label>Repo :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsRepoVersion" class="node-property-value"></span>
+                    </div>
+
+                    <label>System :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsSystemVersion" class="node-property-value"></span>
+                    </div>
+                    <label>Golang :</label>
+                    <div class="node-property-value-wrapper no-button">
+                        <span id="node-input-ipfsGolangVersion" class="node-property-value"></span>
+                    </div>
+                </div>
+
+                <div class="details-grid-section server-details-grid-container">
+                    <label>RPC API:</label>
+                    <div class="node-property-value-wrapper">
+                        <span id="node-input-ipfsRpcApiServer" class="node-property-value"></span>
+                        <button class="copy-button" data-target="node-input-ipfsRpcApiServer"><i class="fa fa-clipboard"></i></button>
+                    </div>
+                    <label>Gateway:</label>
+                    <div class="node-property-value-wrapper">
+                        <span id="node-input-ipfsGatewayServer" class="node-property-value"></span>
+                        <button class="copy-button" data-target="node-input-ipfsGatewayServer"><i class="fa fa-clipboard"></i></button>
+                    </div>
+                    <label>WebUI:</label>
+                    <div class="node-property-value-wrapper">
+                        <span id="node-input-ipfsWebUi" class="node-property-value"></span>
+                        <button class="copy-button" data-target="node-input-ipfsWebUi"><i class="fa fa-clipboard"></i></button>
+                    </div>
+                    <label>Addresses:</label>
+                    <div class="node-property-value-list" id="node-input-ipfsAddresses"></div>
+                    <label>Swarm:</label>
+                    <div class="node-property-value-list" id="node-input-ipfsSwarmListeningAddresses"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        /* Slider Switch Styles */
+        .node-input-connection-toggle-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .node-input-connection-toggle {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .node-input-connection-toggle-label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Default background for the track */
+            background-color: #ccc; /* Neutral grey when disabled or uninitialized */
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .node-input-connection-toggle:not(:checked) + .node-input-connection-toggle-label {
+            background-color: #2196F3; /* Blue for "off" (available nodes) */
+        }
+
+        .node-input-connection-toggle:not(:checked) + .node-input-connection-toggle-label {
+            background-color: #2196F3; /* Blue for "off" (available nodes) */
+        }
+
+        .node-input-connection-toggle-label:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .node-input-connection-toggle:checked + .node-input-connection-toggle-label {
+            background-color: #4CAF50; /* Green for "on" (connected/details) */
+        }
+
+        .node-input-connection-toggle:focus + .node-input-connection-toggle-label {
+            box-shadow: 0 0 1px #4CAF50;
+        }
+
+        .node-input-connection-toggle:checked + .node-input-connection-toggle-label:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Grid for Available IPFS Nodes */
+        #available-ipfs-nodes-grid-container {
+            margin-top: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            display: grid; /* Enable CSS Grid */
+            grid-template-rows: auto auto 1fr auto; /* Header, Column Heads, Available List, Footer */
+            grid-template-columns: 1.5fr 0.8fr 1.2fr 50px; /* API URL, Agent v., Peer ID, Clipboard Icon */
+        }
+
+        #available-ipfs-nodes-grid-container .grid-header {
+            grid-column: 1 / -1; /* Span all columns of the parent grid */
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 1.2fr 50px; /* API URL, Agent v., Peer ID, Clipboard Icon */
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            font-weight: bold;
+        }
+
+        #available-ipfs-nodes-grid-container .grid-column-header {
+            padding: 8px 10px;
+            border-right: 1px solid #eee;
+        }
+
+        #available-ipfs-nodes-grid-container .grid-column-header:last-child {
+            border-right: none;
+        }
+
+        #available-ipfs-nodes-grid-body {
+            grid-column: 1 / -1; /* Span all columns of the parent grid */
+            max-height: 200px; /* Limit height and enable scrolling */
+            overflow-y: auto;
+        }
+
+        #available-ipfs-nodes-grid-body .grid-row {
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 1.2fr 50px; /* API URL, Agent v., Peer ID, Clipboard Icon */
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        #available-ipfs-nodes-grid-body .grid-row:last-child {
+            border-bottom: none;
+        }
+
+        #available-ipfs-nodes-grid-body .grid-cell {
+            padding: 8px 10px;
+            border-right: 1px solid #eee;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #available-ipfs-nodes-grid-body .grid-cell:last-child {
+            border-right: none;
+        }
+
+        #available-ipfs-nodes-grid-body .grid-cell .copy-button {
+            position: static;
+            width: 28px;
+            height: auto;
+            border-radius: 3px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .loading-spinner {
+            padding: 10px;
+            text-align: center;
+            color: #555;
+        }
+
+        /* Styles for the new grid footer */
+        .grid-footer {
+            grid-column: 1 / -1; /* Span all columns of the parent grid */
+            display: grid;
+            grid-template-columns: auto 1fr auto; /* Label, Input, Button */
+            align-items: center;
+            padding: 8px 10px;
+            background-color: #f0f0f0; /* Same as grid-header */
+            border-top: 1px solid #ccc; /* Separator from the grid body */
+            gap: 10px; /* Space between elements in the footer */
+        }
+
+        .grid-footer label {
+            white-space: nowrap; /* Prevent label from wrapping */
+            margin: 0; /* Reset label margins */
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .grid-footer input[type="text"] {
+            flex-grow: 1; /* Allow input to take available space */
+            width: 100%; /* Ensure it fills its grid cell */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+
+        .grid-footer button {
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+
+        /* New style for the header within the grid container */
+        .grid-section-header {
+            grid-column: 1 / -1; /* Make it span all columns of the parent grid */
+            display: grid; /* Use grid for internal layout */
+            grid-template-columns: auto 1fr auto; /* Label, Toggle, Search */
+            align-items: center;
+            padding: 8px 10px;
+            background-color: #f0f0f0; /* Same as grid-header */
+            border-bottom: 1px solid #ccc;
+            font-weight: bold;
+        }
+
+        .grid-section-header label {
+            margin: 0; /* Reset label margins */
+            font-weight: bold; /* Ensure text is bold */
+            font-size: 0.9rem; /* Slightly larger font for header */
+        }
+
+        /* Style for the search input wrapper within the header */
+        .search-input-wrapper {
+            grid-column: 3; /* Place in the third column of the header's internal grid */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-self: end; /* Push to the end of its grid cell */
+        }
+
+        .search-input-wrapper label {
+            font-weight: normal; /* Reset font-weight for the search icon label */
+            font-size: 1rem; /* Adjust icon size */
+        }
+
+        .search-input-wrapper input {
+            flex-grow: 1;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* Custom Tab Container */
+        .custom-node-tabs-container {
+            display: grid;
+            grid-template-rows: auto 1fr; /* Headers row, then content row */
+            height: 100%; /* Take full height of parent */
+            border: 1px solid #ccc; /* Overall border for the tabbed area */
+            border-radius: 5px;
+            overflow: hidden; /* Hide overflow for rounded corners */
+        }
+
+        /* Custom Tab Headers */
+        .custom-tab-headers {
+            display: flex;
+            border-bottom: 1px solid #ccc; /* Separator below headers */
+            background-color: #f0f0f0; /* Background for header area */
+        }
+
+        .custom-tab-header {
+            padding: 8px 15px;
+            cursor: pointer;
+            border-right: 1px solid #eee; /* Separator between headers */
+            color: #555;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1; /* Distribute space evenly */
+            transition: background-color 0.2s ease;
+        }
+
+        .custom-tab-header:last-child {
+            border-right: none; /* No right border for the last header */
+        }
+
+        .custom-tab-header:hover {
+            background-color: #e6e6e6;
+        }
+
+        .custom-tab-header.active {
+            background-color: #fff; /* Active tab background */
+            border-bottom: 1px solid #fff; /* Hide bottom border for active tab */
+            color: #333;
+        }
+
+        /* Custom Tab Content Container */
+        .custom-tab-content-container {
+            display: flex; /* Use flexbox to manage content panels */
+            position: relative; /* Keep relative for absolute positioning of active tab */
+            overflow: hidden; /* Hide overflow of content panels */
+            flex-grow: 1; /* Allow content to take remaining height */
+        }
+
+        .custom-tab-content {
+            position: absolute; /* Keep absolute for tab switching animation */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 15px 25px 15px 15px; /* Increased right padding for overall tab content */
+            background: #fff;
+            overflow-y: auto; /* Enable vertical scrolling for content */
+            overflow-x: hidden; /* Hide horizontal scroll bar */
+            font-size: 0.8rem;
+            display: none; /* Hidden by default */
+            box-sizing: border-box; /* Ensure padding is included in width/height */
+        }
+
+        .custom-tab-content.active {
+            display: block; /* Show active tab content */
+        }
+
+        /* Main grid for the entire details tab */
+        .details-grid-container {
+            display: grid;
+            grid-template-columns: 1fr; /* Single column for sections */
+            gap: 15px; /* Space between major sections */
+        }
+
+        /* Styling for each major section within the details grid */
+        .details-grid-section {
+            display: grid;
+            gap: 1px; /* Smaller gap for table-like appearance */
+            align-items: stretch; /* Stretch items to fill cell height */
+            width: 100%;
+            border: 1px solid #ccc; /* Outer border for the table */
+            border-radius: 5px;
+            overflow: hidden; /* Hide overflow for rounded corners */
+            padding-right: 10px; /* Increased right padding to the grid section itself */
+        }
+
+        /* Specific grid columns for the version details (4x4) */
+        .version-details-grid-container {
+            grid-template-columns: 95px 0.5fr 190px 0.5fr; /* Adjusted widths */
+        }
+
+        /* Specific grid columns for peer and server details (2x2) */
+        .details-grid-section:not(.version-details-grid-container) { /* Apply to peer and server sections */
+            grid-template-columns: 190px 1fr; /* Doubled fixed width for labels, 1fr for values */
+        }
+
+        /* Styling for labels within grid containers */
+        .details-grid-section label {
+            padding: 8px 10px; /* Padding for cells */
+            background-color: #e9e9e9; /* Slightly different background for labels */
+            border-bottom: 1px solid #eee; /* Horizontal cell borders */
+            border-right: 1px solid #eee; /* Vertical cell borders */
+            font-weight: normal; /* Ensure labels are not bolder than values */
+            width: auto; /* Reset width */
+            margin: 0; /* Reset margin */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            font-size: 0.8rem; /* Set font size to 0.8rem */
+        }
+
+        /* Remove right border for last column labels in 4-column grid */
+        .version-details-grid-container label:nth-child(4n) {
+            border-right: none;
+        }
+
+        /* Remove right border for last column labels in 2-column grid */
+        .details-grid-section:not(.version-details-grid-container) label:nth-child(2n) {
+            border-right: none;
+        }
+
+        /* Remove bottom border for last row labels in all grids */
+        .details-grid-section label:nth-last-child(-n+2), /* For 2-column grids */
+        .version-details-grid-container label:nth-last-child(-n+4) { /* For 4-column grids */
+            border-bottom: none;
+        }
+
+        /* Wrapper for value and copy button */
+        .node-property-value-wrapper {
+            position: relative;
+            display: grid; /* Use grid for two-cell layout */
+            grid-template-columns: 1fr auto; /* Content takes 1fr, button takes auto width */
+            align-items: center;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            border-radius: 3px;
+            padding: 3px 18px 3px 5px; /* Further increased right padding for value wrappers */
+            overflow: hidden; /* For truncation */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            border-bottom: 1px solid #eee; /* Horizontal cell borders */
+            border-right: 1px solid #eee; /* Vertical cell borders */
+        }
+
+        /* Remove right border for last column wrappers in 4-column grid */
+        .version-details-grid-container .node-property-value-wrapper:nth-child(4n) {
+            border-right: none;
+        }
+
+        /* Remove right border for last column wrappers in 2-column grid */
+        .details-grid-section:not(.version-details-grid-container) .node-property-value-wrapper:nth-child(2n) {
+            border-right: none;
+        }
+
+        /* Remove bottom border for last row wrappers in all grids */
+        .details-grid-section .node-property-value-wrapper:nth-last-child(-n+2), /* For 2-column grids */
+        .version-details-grid-container .node-property-value-wrapper:nth-last-child(-n+4) { /* For 4-column grids */
+            border-bottom: none;
+        }
+
+        /* Specific styles for wrappers without buttons (middle section) */
+        .node-property-value-wrapper.no-button {
+            grid-template-columns: 1fr; /* Ensure it's a single column */
+            padding-right: 5px; /* Keep original padding for consistency if needed, or adjust */
+        }
+        .node-property-value-wrapper.no-button .node-property-value {
+            white-space: pre-wrap; /* Allow wrapping */
+            text-overflow: unset; /* Remove ellipsis */
+            padding-right: 0; /* No button, so no padding needed for it */
+        }
+        /* Adjust padding for scrollable lists to prevent scrollbar overlap */
+        .node-property-value-list {
+            padding-right: 25px; /* Further increased padding to account for scrollbar */
+        }
+
+
+        /* Styling for the actual value span/div */
+        .node-property-value {
+            white-space: nowrap; /* Truncate single line text */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0; /* Reset padding from previous rules */
+            border: none; /* Remove borders */
+            background-color: transparent; /* Remove background */
+            margin: 0; /* Remove margins */
+        }
+
+        /* Styles for address lists */
+        .node-property-value-list {
+            display: grid !important; /* Make it a grid container */
+            grid-template-columns: 1fr !important; /* Stack children vertically */
+            max-height: 100px; /* Max height for scrollable list (approx 5 rows) */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ccc; /* Add border to match other wrappers */
+            background-color: #eee; /* Add background to match other wrappers */
+            border-radius: 3px; /* Add border-radius to match other wrappers */
+            padding: 3px 25px 3px 5px; /* Increased right padding for address lists */
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+            border-bottom: 1px solid #eee; /* Horizontal cell borders */
+            border-right: 1px solid #eee; /* Vertical cell borders */
+        }
+        /* Remove bottom border for last row wrappers in all grids */
+        .details-grid-section .node-property-value-list:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+        /* Remove right border for last column wrappers in 2-column grid */
+        .details-grid-section .node-property-value-list:nth-child(2n) {
+            border-right: none;
+        }
+
+        /* Styling for individual address items within the list */
+        .address-item-grid {
+            display: grid !important; /* Ensure grid is applied */
+            grid-template-columns: 1fr auto; /* Address text takes 1fr, button takes auto width */
+            align-items: center;
+            gap: 5px; /* Small gap between text and button */
+            padding: 3px 0; /* Vertical padding for each address row */
+            border-bottom: 1px solid #eee; /* Separator for each address */
+        }
+
+        .address-item-grid:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+
+        .address-item-grid .node-property-value {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 12px; /* Increased padding to the text before the button */
+            line-height: 20px; /* Adjust line height to control row height */
+        }
+
+        .address-item-grid .copy-button {
+            position: static; /* Reset from absolute positioning */
+            width: 28px;
+            height: auto; /* Allow button to size based on content/padding */
+            border-radius: 3px; /* Apply rounded corners to individual buttons */
+            margin-left: auto; /* Push button to the right */
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+
+        /* Styling for copy buttons */
+        .copy-button {
+            width: 28px; /* Small button width */
+            background-color: transparent; /* Make button background transparent */
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px; /* Increased horizontal padding to the button itself */
+            z-index: 2; /* Ensure it's above the text */
+            border-radius: 0 3px 3px 0; /* Rounded corners on the right side */
+            grid-column: 2;
+            height: 100%;
+            box-sizing: border-box; /* Include padding and border in element's total width and height */
+        }
+        .copy-button:hover {
+            background-color: #c0c0c0; /* Slightly darker on hover */
+        }
+
+        /* Remove existing form-row styles that conflict with grid */
+        .form-row label {
+            width: auto; /* Reset label width */
+            margin-right: 0; /* Reset margin */
+        }
+        .form-row {
+            display: block; /* Reset to block to avoid flex conflicts */
+            align-items: unset; /* Reset alignment */
+        }
+    </style>
+</script>
+
+<script type="text/javascript">
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('nb-connect', {
+        category: 'nodebit',
+        color: '#77DD77',
+        defaults: {
+            name: {value: ""},
+            ipfsApiUrl: {value: "", required: false}, // No default value, not required initially
+            orbitDbPath: {value: "./orbitdb", required: true},
+            // New properties for IPFS instance details
+            peerId: {value: ""},
+            ipfsAgentVersion: {value: ""},
+            ipfsProtocolVersion: {value: ""},
+            ipfsAddresses: {value: []},
+            ipfsPublicKey: {value: ""},
+            ipfsKuboVersion: {value: ""},
+            ipfsRepoVersion: {value: ""},
+            ipfsSystemVersion: {value: ""},
+            ipfsGolangVersion: {value: ""},
+            ipfsMaxMemory: {value: ""},
+            ipfsMaxFileDescriptors: {value: ""},
+            ipfsSwarmListeningAddresses: {value: []},
+            ipfsRpcApiServer: {value: ""},
+            ipfsGatewayServer: {value: ""},
+            ipfsWebUi: {value: ""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "font-awesome/fa-plug",
+        label: function() {
+            return this.name || "nb-connect";
+        },
+        oneditprepare: function() {
+            // Function to update visibility of UI elements based on connection status and toggle state
+            function updateUiVisibility(isConnected, isToggleOn) {
+                if (isConnected && isToggleOn) {
+                    $("#discovery-selection-view").hide();
+                    $("#dual-tab-ui-container").show();
+                    $("#node-input-connectedIpfsApiUrl").val(RED.nodes.node(this.id).ipfsApiUrl || "");
+                } else {
+                    $("#discovery-selection-view").show();
+                    $("#dual-tab-ui-container").hide();
+                }
+            }
+
+            // Initial UI state based on whether ipfsApiUrl is already set
+            // Ensure ipfsApiUrl is an empty string if not set, for consistent initial state handling
+            if (this.ipfsApiUrl === undefined || this.ipfsApiUrl === null) {
+                this.ipfsApiUrl = "";
+            }
+
+            const isConnectedInitially = !!this.ipfsApiUrl;
+            $("#node-input-connection-toggle").prop('checked', isConnectedInitially);
+            $("#node-input-connection-toggle").prop('disabled', !isConnectedInitially); // Disable if not connected
+
+            // Manually trigger the change event to ensure UI updates based on the initial state
+            // This is crucial if Node-RED's internal rendering or other scripts interfere with initial prop setting
+            $("#node-input-connection-toggle").trigger('change');
+
+            // Function to discover and populate available IPFS nodes
+            const discoverAndPopulateNodes = () => {
+                $("#available-ipfs-nodes-grid-body").empty().append(`
+                    <div class="loading-spinner">
+                        <i class="fa fa-spinner fa-spin"></i> Searching for local IPFS nodes...
+                    </div>
+                `);
+
+                $.getJSON("nb-connect/discover-ipfs-nodes")
+                    .done(function(data) {
+                        $("#available-ipfs-nodes-grid-body").empty();
+                        if (data && data.length > 0) {
+                            data.forEach(node => {
+                                const truncatedPeerId = node.id ? `${node.id.substring(0, 8)}...` : 'N/A';
+                                const rowHtml = `
+                                    <div class="grid-row" data-api-url="${node.apiAddress}" data-peer-id="${node.id}" data-agent-version="${node.agentVersion}">
+                                        <div class="grid-cell">${node.apiAddress}</div>
+                                        <div class="grid-cell">${node.agentVersion || 'N/A'}</div>
+                                        <div class="grid-cell">
+                                            <span class="node-property-value">${truncatedPeerId}</span>
+                                        </div>
+                                        <div class="grid-cell">
+                                            <button class="copy-button" data-text-to-copy="${node.id}"><i class="fa fa-clipboard"></i></button>
+                                        </div>
+                                    </div>
+                                `;
+                                $("#available-ipfs-nodes-grid-body").append(rowHtml);
+                            });
+                        } else {
+                            $("#available-ipfs-nodes-grid-body").append(`
+                                <div class="grid-row">
+                                    <div class="grid-cell" colspan="3">No local IPFS nodes found. Please ensure your IPFS daemon is running or enter the API URL manually.</div>
+                                </div>
+                            `);
+                        }
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        $("#available-ipfs-nodes-grid-body").empty().append(`
+                            <div class="grid-row">
+                                <div class="grid-cell" colspan="3">Error discovering IPFS nodes: ${errorThrown}. Please ensure your IPFS daemon is running.</div>
+                            </div>
+                        `);
+                        RED.notify("Error discovering IPFS nodes: " + errorThrown, "error");
+                    });
+            };
+
+            // Initial discovery call
+            discoverAndPopulateNodes();
+
+            // Handle slider switch toggle
+            $("#node-input-connection-toggle").on("change", async function() {
+                const isChecked = $(this).is(":checked");
+                if (isChecked) {
+                    // Attempt to connect to the selected node or manual URL
+                    let selectedApiUrl = $("#node-input-manualIpfsApiUrl").val(); // Prioritize manual input
+                    if (!selectedApiUrl) {
+                        const selectedRow = $("#available-ipfs-nodes-grid-body .grid-row.selected");
+                        if (selectedRow.length > 0) {
+                            selectedApiUrl = selectedRow.data("api-url");
+                        }
+                    }
+
+                    if (selectedApiUrl) {
+                        // Ping for validation
+                        try {
+                            const response = await fetch(`${selectedApiUrl}/api/v0/id`, { method: 'POST', timeout: 2000 }); // 2 second timeout
+                            if (!response.ok) {
+                                throw new Error(`HTTP status ${response.status}`);
+                            }
+                            const idInfo = await response.json(); // Consume response body
+                            if (!idInfo.ID) {
+                                throw new Error("Invalid IPFS ID response.");
+                            }
+
+                            // If ping successful, set ipfsApiUrl and update UI
+                            $("#node-input-ipfsApiUrl").val(selectedApiUrl);
+                            RED.nodes.dirty(true);
+                            updateUiVisibility.call(this, true, true);
+                            RED.notify("Successfully connected to IPFS instance!", "success");
+                        } catch (error) {
+                            RED.notify(`Failed to connect to IPFS at ${selectedApiUrl}: ${error.message}. Switch remains off.`, "error");
+                            $(this).prop('checked', false); // Revert toggle
+                            updateUiVisibility.call(this, false, false);
+                        }
+                    } else {
+                        RED.notify("Please select an IPFS node or enter a manual API URL.", "warn");
+                        $(this).prop('checked', false); // Revert toggle
+                        updateUiVisibility.call(this, false, false);
+                    }
+                } else {
+                    // If toggle is off, revert to discovery view
+                    $("#node-input-ipfsApiUrl").val(""); // Clear connected API URL
+                    RED.nodes.dirty(true);
+                    updateUiVisibility.call(this, false, false);
+                    discoverAndPopulateNodes(); // Re-discover nodes
+                }
+            });
+
+            // Handle row selection in the available IPFS nodes grid
+            $("#available-ipfs-nodes-grid-body").on("click", ".grid-row", function() {
+                $("#available-ipfs-nodes-grid-body .grid-row").removeClass("selected");
+                $(this).addClass("selected");
+                $("#node-input-manualIpfsApiUrl").val($(this).data("api-url")); // Populate manual input with selected API URL
+                $("#node-input-connection-toggle").prop('disabled', false); // Enable slider on selection
+            });
+
+            // Handle "Connect Manually" button click
+            $("#node-button-manual-connect").on("click", function() {
+                const manualApiUrl = $("#node-input-manualIpfsApiUrl").val();
+                if (manualApiUrl) {
+                    // Simulate toggle on action for manual connect
+                    $("#node-input-connection-toggle").prop('checked', true).trigger('change');
+                } else {
+                    RED.notify("Please enter a manual API URL.", "warn");
+                }
+            });
+
+            // Handle search input for available IPFS nodes
+            $("#node-input-search-available-nodes").on("keyup", function() {
+                const searchText = $(this).val().toLowerCase();
+                $("#available-ipfs-nodes-grid-body .grid-row").each(function() {
+                    const peerId = $(this).data("peer-id").toLowerCase();
+                    const agentVersion = $(this).data("agent-version").toLowerCase();
+                    if (peerId.includes(searchText) || agentVersion.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // Add click handlers for copy buttons (for both new grid and existing details tab)
+            $(document).on("click", ".copy-button", function() {
+                const textToCopy = $(this).data("text-to-copy") || $(this).siblings(".node-property-value").text();
+                if (textToCopy) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        RED.notify("Copied to clipboard!", "success");
+                    }).catch(err => {
+                        console.error("Failed to copy text: ", err);
+                        RED.notify("Failed to copy to clipboard.", "error");
+                    });
+                }
+            });
+
+            // Initialize custom tabs (only if dual-tab-ui-container is visible)
+            $("#dual-tab-ui-container .custom-tab-header").on("click", function() {
+                const targetTab = $(this).data("tab");
+
+                $("#dual-tab-ui-container .custom-tab-header").removeClass("active");
+                $(this).addClass("active");
+
+                $("#dual-tab-ui-container .custom-tab-content").removeClass("active");
+                $(`#dual-tab-ui-container #custom-tab-${targetTab}`).addClass("active");
+            });
+
+            // Function to populate fields (for the details tab)
+            function populateIpfsDetails(data) {
+                $("#node-input-peerId").text(data.peerId || "");
+                $("#node-input-ipfsPublicKey").text(data.ipfsPublicKey || "");
+                $("#node-input-ipfsAgentVersion").text(data.ipfsAgentVersion || "");
+                $("#node-input-ipfsProtocolVersion").text(data.ipfsProtocolVersion || "");
+                $("#node-input-ipfsKuboVersion").text(data.ipfsKuboVersion || "");
+                $("#node-input-ipfsRepoVersion").text(data.ipfsRepoVersion || "");
+                $("#node-input-ipfsSystemVersion").text(data.ipfsSystemVersion || "");
+                $("#node-input-ipfsGolangVersion").text(data.ipfsGolangVersion || "");
+                $("#node-input-ipfsMaxMemory").text(data.ipfsMaxMemory || "");
+                $("#node-input-ipfsMaxFileDescriptors").text(data.ipfsMaxFileDescriptors || "");
+                $("#node-input-ipfsRpcApiServer").text(data.ipfsRpcApiServer || "");
+                $("#node-input-ipfsGatewayServer").text(data.ipfsGatewayServer || "");
+                $("#node-input-ipfsWebUi").text(data.ipfsWebUi || "");
+
+                $("#node-input-ipfsAddresses").empty();
+                if (data.ipfsAddresses && data.ipfsAddresses.length > 0) {
+                    data.ipfsAddresses.forEach((addr, index) => {
+                        const uniqueId = `ipfs-address-${index}`;
+                        $("#node-input-ipfsAddresses").append(
+                            `<div class="address-item-grid">
+                                <span id="${uniqueId}" class="node-property-value">${addr}</span>
+                                <button class="copy-button" data-target="${uniqueId}" data-text-to-copy="${addr}"><i class="fa fa-clipboard"></i></button>
+                            </div>`
+                        );
+                    });
+                }
+                $("#node-input-ipfsSwarmListeningAddresses").empty();
+                if (data.ipfsSwarmListeningAddresses && data.ipfsSwarmListeningAddresses.length > 0) {
+                    data.ipfsSwarmListeningAddresses.forEach((addr, index) => {
+                        const uniqueId = `ipfs-swarm-address-${index}`;
+                        $("#node-input-ipfsSwarmListeningAddresses").append(
+                            `<div class="address-item-grid">
+                                <span id="${uniqueId}" class="node-property-value">${addr}</span>
+                                <button class="copy-button" data-target="${uniqueId}" data-text-to-copy="${addr}"><i class="fa fa-clipboard"></i></button>
+                            </div>`
+                        );
+                    });
+                }
+            }
+
+            // Make AJAX call to fetch live properties if connected
+            if (isConnectedInitially) {
+                console.log(`[nb-connect.html] Fetching properties for node ID: ${this.id}`);
+                $.getJSON("nb-connect/" + this.id + "/properties").done(function(data) {
+                    console.log(`[nb-connect.html] Successfully fetched properties. Data:`, data);
+                    populateIpfsDetails(data);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("[nb-connect.html] Failed to fetch properties:", textStatus, errorThrown);
+                    populateIpfsDetails({}); // Clear fields on error
+                });
+            }
+
+            // Populate configuration fields with existing saved data
+            $("#node-input-name").val(this.name);
+            $("#node-input-orbitDbPath").val(this.orbitDbPath);
+        }
+    });
+</script>

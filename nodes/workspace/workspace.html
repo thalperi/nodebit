@@ -1,0 +1,271 @@
+<!-- Test minimal config node based on MQTT broker pattern -->
+<script type="text/html" data-template-name="nb-workspace">
+    <!-- Status message bar - moved to top for visibility -->
+    <div id="workspace-status-message" style="margin-bottom:15px; padding:10px; background:#3498db; color:white; border-radius:4px; font-weight:bold; text-align:center;">
+        <i class="fa fa-info-circle" style="margin-right:8px;"></i>
+        <span id="status-message-text">Workspace has not yet initialized. Deploy the flow to create the workspace and load its dashboard.</span>
+    </div>
+    
+    <div style="margin-bottom:15px; padding:12px; border-left:4px solid #3498db;">
+        <strong style="font-size:16px;">Workspace Management</strong><br>
+        <span style="color:#666; font-size:13px;">Distributed Data Dashboard for browsing IPFS networks, OrbitDB databases, and managing files</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-config-input-name" style="width:140px;"><i class="fa fa-tag"></i> Workspace Name *</label>
+        <input type="text" id="node-config-input-name" placeholder="Enter a workspace name (required)" style="width:calc(100% - 150px);" required>
+    </div>
+    
+    <div class="form-row">
+        <label for="node-config-input-dataDir" title="Directory where IPFS blocks and OrbitDB data will be stored" style="width:140px;"><i class="fa fa-folder"></i> Data Directory</label>
+        <input type="text" id="node-config-input-dataDir" placeholder=".nodebit" style="width:calc(100% - 200px); display:inline-block;">
+        <button type="button" id="browse-folder-btn" class="red-ui-button" style="margin-left:5px; width:40px;"><i class="fa fa-folder-open"></i></button>
+    </div>
+    
+    <div class="form-row">
+        <label style="width:140px;">&nbsp;</label>
+        <div style="display:inline-block; width:calc(100% - 150px); white-space:nowrap;">
+            <input type="checkbox" id="node-config-input-autoStart" style="display:inline-block; width:auto; vertical-align:middle; margin-right:8px;">
+            <label for="node-config-input-autoStart" style="display:inline-block; vertical-align:middle; margin:0; white-space:nowrap;">Auto-start Helia IPFS</label>
+        </div>
+    </div>
+    
+    <!-- Embedded Dashboard -->
+    <div id="embedded-dashboard" style="margin-top:20px; border:1px solid #ddd; border-radius:4px; background:white;">
+        <div style="padding:8px 12px; background:#3498db; color:white; border-bottom:1px solid #ddd; border-radius:4px 4px 0 0; position:relative;">
+            <span id="dashboard-title"><h3 style="margin:0; font-size:16px; display:inline-block;">Distributed Data Dashboard</h3></span>
+        </div>
+        <iframe id="dashboard-frame" style="width:100%; height:600px; border:none;" src="about:blank"></iframe>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="nb-workspace">
+    <p>Test configuration node for Nodebit workspace.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('nb-workspace',{
+        category: 'config',
+        defaults: {
+            name: {
+                value: "", 
+                required: true,
+                validate: function(v) {
+                    // Node-RED declarative validation pattern
+                    const trimmed = v ? v.trim() : "";
+                    
+                    // Must not be empty or default name
+                    if (trimmed.length === 0 || trimmed === "nb-workspace") {
+                        return false;
+                    }
+                    
+                    // Must be unique among other workspace config nodes
+                    let isDuplicate = false;
+                    const currentNodeId = this.id;
+                    RED.nodes.eachConfig(function(configNode) {
+                        if (configNode.type === 'nb-workspace' && 
+                            configNode.id !== currentNodeId && 
+                            configNode.name && 
+                            configNode.name.trim().toLowerCase() === trimmed.toLowerCase()) {
+                            isDuplicate = true;
+                        }
+                    });
+                    
+                    return !isDuplicate;
+                }
+            },
+            dataDir: {value:".nodebit"},
+            autoStart: {value:true}
+        },
+        label: function() {
+            return this.name||"nb-workspace";
+        },
+        oneditprepare: function() {
+            const node = this;
+            
+            // Define helper functions first to avoid hoisting issues
+            const showStatusMessage = (message, type = 'info') => {
+                const colors = {
+                    info: '#3498db',      // Blue background
+                    success: '#27ae60', 
+                    warning: '#f39c12',   // Yellow background
+                    error: '#e74c3c'
+                };
+                const textColors = {
+                    info: 'white',
+                    success: 'white',
+                    warning: 'black',     // Black text for yellow background
+                    error: 'white'
+                };
+                const icons = {
+                    info: 'fa-info-circle',
+                    success: 'fa-check-circle',
+                    warning: 'fa-exclamation-triangle', 
+                    error: 'fa-times-circle'
+                };
+                $("#status-message-text").text(message);
+                $("#workspace-status-message")
+                    .css('background', colors[type])
+                    .css('color', textColors[type])
+                    .show();
+                $("#workspace-status-message i")
+                    .removeClass()
+                    .addClass('fa ' + icons[type])
+                    .css('margin-right', '8px')
+                    .css('color', textColors[type]);
+            };
+            
+            const hideStatusMessage = () => {
+                $("#workspace-status-message").hide();
+            };
+            
+            const showDashboardPlaceholder = () => {
+                $("#dashboard-frame").attr('src', 'about:blank');
+                $("#dashboard-placeholder").remove();
+                // Hide refresh button when showing placeholder
+                $("#refresh-dashboard-btn").hide();
+            };
+            
+            // Initialize form values
+            $("#node-config-input-name").val(node.name || "");
+            $("#node-config-input-dataDir").val(node.dataDir || ".nodebit");
+            $("#node-config-input-autoStart").prop('checked', node.autoStart !== false);
+            
+            // Simple validation for workspace name
+            const nameInput = $("#node-config-input-name");
+            const addButton = $("#node-config-dialog-ok");
+            
+            const validateName = () => {
+                const name = nameInput.val().trim();
+                
+                if (name.length === 0 || name === "nb-workspace") {
+                    // Empty or default name - disable button
+                    nameInput.removeClass('input-error');
+                    showStatusMessage('Workspace has not yet initialized. Deploy the flow to create the workspace and load its dashboard.', 'info');
+                    addButton.prop('disabled', true).addClass('disabled');
+                } else {
+                    // Check for duplicate names
+                    let isDuplicate = false;
+                    RED.nodes.eachConfig(function(configNode) {
+                        if (configNode.type === 'nb-workspace' && 
+                            configNode.id !== node.id && 
+                            configNode.name && 
+                            configNode.name.trim().toLowerCase() === name.toLowerCase()) {
+                            isDuplicate = true;
+                        }
+                    });
+                    
+                    if (isDuplicate) {
+                        nameInput.addClass('input-error');
+                        showStatusMessage('This workspace name is already in use. Please choose a different name.', 'warning');
+                        addButton.prop('disabled', true).addClass('disabled');
+                    } else {
+                        nameInput.removeClass('input-error');
+                        showStatusMessage('Workspace has not yet initialized. Deploy the flow to create the workspace and load its dashboard.', 'info');
+                        addButton.prop('disabled', false).removeClass('disabled');
+                    }
+                }
+            };
+            
+            // Set up validation
+            nameInput.on('input keyup', validateName);
+            setTimeout(validateName, 100);
+            
+            // Show initial friendly state - always start with blue message
+            showStatusMessage('Workspace has not yet initialized. Deploy the flow to create the workspace and load its dashboard.', 'info');
+            
+            // Update dashboard title with workspace name
+            const updateDashboardTitle = () => {
+                const workspaceName = $("#node-config-input-name").val() || "Workspace";
+                $("#dashboard-title").html('<h3 style="margin:0; font-size:16px; display:inline-block;">Distributed Data Dashboard: ' + workspaceName + '</h3>');
+            };
+            
+            // Set up folder browser button
+            $("#browse-folder-btn").click(function() {
+                RED.notify("Folder browser not yet implemented. Please enter path manually.", "info");
+            });
+            
+            // Debounce mechanism to prevent multiple simultaneous calls
+            let loadDashboardTimeout = null;
+            let isLoading = false;
+            let workspaceDeployed = false;
+            
+            // Load embedded dashboard
+            const loadDashboard = (forceCheck = false) => {
+                if (loadDashboardTimeout) {
+                    clearTimeout(loadDashboardTimeout);
+                }
+                
+                loadDashboardTimeout = setTimeout(() => {
+                    if (isLoading) return;
+                    
+                    if (node.id) {
+                        // Check if this is a new unsaved node using the official Node-RED API
+                        const existingNode = RED.nodes.node(node.id);
+                        if (!existingNode) {
+                            showDashboardPlaceholder();
+                            return;
+                        }
+                        
+                        isLoading = true;
+                        
+                        fetch('/nodebit/workspace/' + node.id + '/api/status', { method: 'GET' })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Load dashboard if workspace exists (regardless of started state)
+                                workspaceDeployed = true;
+                                hideStatusMessage();
+                                const dashboardUrl = '/nodebit/workspace/' + node.id + '/ddd';
+                                $("#dashboard-frame").attr('src', dashboardUrl);
+                                $("#dashboard-placeholder").remove();
+                                // Show refresh button once dashboard loads
+                                $("#refresh-dashboard-btn").show();
+                            })
+                            .catch(() => {
+                                workspaceDeployed = false;
+                                showStatusMessage('Workspace has not yet initialized. Deploy the flow to create the workspace and load its dashboard.', 'info');
+                                showDashboardPlaceholder();
+                            })
+                            .finally(() => {
+                                isLoading = false;
+                            });
+                    } else {
+                        showDashboardPlaceholder();
+                    }
+                }, 100);
+            };
+            
+            // Update title when name changes
+            $("#node-config-input-name").on('input', updateDashboardTitle);
+            
+            // Load dashboard initially
+            updateDashboardTitle();
+            // Force check on initial load to bypass deployment state check
+            loadDashboard(true);
+            
+            // Reload dashboard when configuration changes
+            $("#node-config-input-dataDir, #node-config-input-autoStart").on('change', function() {
+                loadDashboard();
+            });
+            
+            // Add refresh button (initially hidden)
+            $("#dashboard-title").parent().append('<button type="button" id="refresh-dashboard-btn" class="red-ui-button" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:11px; padding:6px 12px; background:#2980b9; border:1px solid #1f5f8b; color:white; border-radius:3px; display:none;"><i class="fa fa-refresh"></i> Refresh</button>');
+            
+            $("#refresh-dashboard-btn").click(function() {
+                const refreshBtn = $(this);
+                refreshBtn.find('i').addClass('fa-spin');
+                
+                if (node.id) {
+                    const existingNode = RED.nodes.node(node.id);
+                    if (existingNode) {
+                        isLoading = false;
+                        loadDashboard(true);
+                    }
+                    setTimeout(() => refreshBtn.find('i').removeClass('fa-spin'), 500);
+                } else {
+                    refreshBtn.find('i').removeClass('fa-spin');
+                }
+            });
+        }
+    });
+</script>

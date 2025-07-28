@@ -1,0 +1,184 @@
+<!-- nb-file Node UI - Real IPFS Implementation -->
+
+<script type="text/html" data-template-name="nb-file">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="File Operations">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-workspace"><i class="fa fa-cube"></i> Workspace</label>
+        <input type="text" id="node-input-workspace">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-operation"><i class="fa fa-cog"></i> Operation</label>
+        <select id="node-input-operation">
+            <option value="auto">Auto-detect from message</option>
+            <option value="upload">Upload files to IPFS</option>
+            <option value="download">Download files from IPFS</option>
+        </select>
+    </div>
+    
+    <div class="form-row" style="background:#d4edda; padding:10px; border-radius:4px; margin-top:20px;">
+        <strong>Real IPFS Operations</strong><br>
+        This node performs actual IPFS file operations using Helia. It will:
+        <ul style="margin:5px 0 0 20px;">
+            <li>Upload files and return real CIDs</li>
+            <li>Download files from IPFS network</li>
+            <li>Integrate with workspace's IPFS nodes</li>
+        </ul>
+    </div>
+    
+    <div class="form-row" style="background:#fff3cd; padding:10px; border-radius:4px; margin-top:10px;">
+        <strong>Quick Test</strong><br>
+        <p style="margin:5px 0;">Test IPFS operations directly from this configuration:</p>
+        <div style="margin:10px 0;">
+            <input type="text" id="test-content" placeholder="Enter text to upload" style="width:200px; margin-right:10px;">
+            <button type="button" id="test-upload-btn" class="red-ui-button">Test Upload</button>
+        </div>
+        <div style="margin:10px 0;">
+            <input type="text" id="test-cid" placeholder="Enter CID to download" style="width:200px; margin-right:10px;">
+            <button type="button" id="test-download-btn" class="red-ui-button">Test Download</button>
+        </div>
+        <div id="test-results" style="margin-top:10px; padding:10px; background:#f8f9fa; border-radius:4px; font-family:monospace; font-size:12px; max-height:200px; overflow-y:auto; display:none;"></div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="nb-file">
+    <p>The <strong>nb-file</strong> node handles real IPFS file operations using Helia.</p>
+    
+    <h3>Real IPFS Operations</h3>
+    <p>This node performs actual IPFS operations:</p>
+    <ul>
+        <li>Upload: Stores files in IPFS and returns real CIDs</li>
+        <li>Download: Retrieves files from IPFS network</li>
+        <li>Auto-detection: Automatically determines operation from message content</li>
+    </ul>
+    
+    <h3>Input Examples</h3>
+    <h4>Upload a file</h4>
+    <pre>msg.payload = "Hello IPFS!"
+msg.filename = "test.txt"
+// or
+msg.payload = Buffer.from("binary data")
+msg.filename = "data.bin"</pre>
+    
+    <h4>Download a file</h4>
+    <pre>msg.payload = "QmYourRealCID..."
+// or
+msg.cid = "QmYourRealCID..."</pre>
+    
+    <h3>Output</h3>
+    <h4>Upload Result</h4>
+    <pre>msg.topic = "file.uploaded"
+msg.payload = {
+  cid: "QmRealCID...",
+  file: { name, size, type },
+  links: { ipfs, gateway }
+}</pre>
+    
+    <h4>Download Result</h4>
+    <pre>msg.topic = "file.downloaded"
+msg.payload = "file content" // or Buffer
+msg.file = { cid, size, type }</pre>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('nb-file', {
+        category: 'nodebit',
+        color: '#E8A317',
+        defaults: {
+            name: { value: "" },
+            workspace: { value: "", type: "nb-workspace", required: true },
+            operation: { value: "auto" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-file",
+        label: function() {
+            return this.name || "nb-file";
+        },
+        
+        oneditprepare: function() {
+            const node = this;
+            $("#node-input-name").val(this.name || "");
+            $("#node-input-operation").val(this.operation || "auto");
+            
+            // Set up test functionality
+            $("#test-upload-btn").click(function() {
+                const content = $("#test-content").val();
+                if (!content) {
+                    RED.notify("Please enter some text to upload", "warning");
+                    return;
+                }
+                
+                if (!node.workspace) {
+                    RED.notify("Please select a workspace first", "warning");
+                    return;
+                }
+                
+                // Show loading
+                $("#test-results").show().html("Uploading to IPFS...");
+                
+                // Simulate the upload operation by calling the workspace API
+                const workspaceNode = RED.nodes.node(node.workspace);
+                if (workspaceNode && workspaceNode.id) {
+                    // Test via a simple HTTP call to demonstrate functionality
+                    fetch('/nodebit/workspace/' + workspaceNode.id + '/api/test-upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ content: content, filename: 'test-file.txt' })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        $("#test-results").html("Upload Result:\n" + JSON.stringify(data, null, 2));
+                    })
+                    .catch(error => {
+                        $("#test-results").html("Upload Error:\n" + error.message);
+                    });
+                } else {
+                    $("#test-results").html("Error: Workspace not available for testing");
+                }
+            });
+            
+            $("#test-download-btn").click(function() {
+                const cid = $("#test-cid").val();
+                if (!cid) {
+                    RED.notify("Please enter a CID to download", "warning");
+                    return;
+                }
+                
+                if (!node.workspace) {
+                    RED.notify("Please select a workspace first", "warning");
+                    return;
+                }
+                
+                // Show loading
+                $("#test-results").show().html("Downloading from IPFS...");
+                
+                // Test via workspace API
+                const workspaceNode = RED.nodes.node(node.workspace);
+                if (workspaceNode && workspaceNode.id) {
+                    fetch('/nodebit/workspace/' + workspaceNode.id + '/api/test-download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cid: cid })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        $("#test-results").html("Download Result:\n" + JSON.stringify(data, null, 2));
+                    })
+                    .catch(error => {
+                        $("#test-results").html("Download Error:\n" + error.message);
+                    });
+                } else {
+                    $("#test-results").html("Error: Workspace not available for testing");
+                }
+            });
+            
+            // Workspace is automatically handled by Node-RED as a config node reference
+            // No special setup needed - Node-RED will show a dropdown with pencil icon
+        }
+    });
+</script>
