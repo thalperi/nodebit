@@ -5,12 +5,17 @@
 **Status**: 🔄 PARTIAL - Basic avatar functionality exists, needs integration with complete DID system
 
 **Current Features**:
-- 🔄 Basic avatar upload (needs testing and integration)
-- 🔄 Button text handling (needs verification)
-- 🔄 Filename display (needs testing)
-- 🔄 Panel functionality (needs integration with complete DID system)
-- 🔄 Visual updates (needs verification)
-- 🔄 Event handling (needs testing)
+- ✅ Instant preview on file selection
+- ✅ Smart button text ("Choose Avatar" vs "Change Avatar") 
+- ✅ Filename display and tracking
+- ✅ Panel persistence during operations
+- ✅ Proper event handling to prevent panel collapse
+
+**Needs Integration**:
+- 🔄 Complete integration with DID management system
+- 🔄 Database persistence and retrieval
+- 🔄 Error handling for upload failures
+- 🔄 File type validation and size limits
 
 ### **Critical Priority: Complete nb-file and nb-database Implementation**
 **Priority**: HIGH - Core Functionality Missing
@@ -50,6 +55,55 @@
 - Update Security UI to show admin dropdown with all admin DIDs
 - Implement admin authentication and session management
 - Add audit logging for admin actions and role changes
+
+### **Activity Management System** *(NEEDS COMPLETION)*
+**Priority**: HIGH - User Experience and Monitoring
+**Status**: 🔄 PARTIAL - Basic activity logging exists, needs comprehensive features
+
+**Required Features**:
+- 🔄 Real-time activity search and filtering
+- 🔄 Activity pagination for large datasets
+- 🔄 Bulk CSV export functionality
+- 🔄 Activity clear/cleanup operations
+- 🔄 Activity detail expansion/collapse
+- 🔄 Auto-refresh every 30 seconds for Overview tab
+- 🔄 Proper error handling for API calls
+
+### **DID Management System** *(NEEDS COMPLETION)*
+**Priority**: HIGH - Core Security Functionality
+**Status**: 🔄 PARTIAL - Basic CRUD operations exist, needs completion
+
+**Required Features**:
+- 🔄 Complete DID creation with full metadata
+- 🔄 DID search and filtering functionality
+- 🔄 DID form validation and error handling
+- 🔄 DID deletion with confirmation dialogs
+- 🔄 DID metadata editing (username, display name, email, role)
+- 🔄 Contact & Organization section (organization, department, phone, location)
+- 🔄 Notes & Description textarea
+- 🔄 Save Changes, Reset, and Delete DID buttons
+
+### **ACL Management System** *(NEEDS IMPLEMENTATION)*
+**Priority**: MEDIUM - Access Control
+**Status**: ❌ NOT IMPLEMENTED - Basic structure exists, needs full implementation
+
+**Required Features**:
+- 🔄 User and resource selection panels
+- 🔄 Permission management (grant/revoke)
+- 🔄 Real-time permission updates
+- 🔄 Permission validation and error handling
+- 🔄 Integration with DID system for user management
+
+### **Network Management System** *(NEEDS ENHANCEMENT)*
+**Priority**: MEDIUM - System Monitoring
+**Status**: 🔄 PARTIAL - Basic network display exists, needs enhancement
+
+**Required Features**:
+- 🔄 Network management panel with accordion behavior
+- 🔄 Network-specific management UI generation
+- 🔄 Helia and Kubo network detection
+- 🔄 Network status monitoring and updates
+- 🔄 Network configuration and management options
 
 **Files to Modify**:
 - `lib/nodebit-core.js` - Node ID-based data isolation and default admin DID creation

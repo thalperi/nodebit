@@ -13,7 +13,7 @@ This documentation is organized to help contributors, developers, and users find
 - [TODO List](./general/todo.md): Ongoing and planned tasks
 - [WIP Notes](./general/wip.md): Work-in-progress, session notes, and planning
 - [Session Notes](./general/session.md), [Session Summaries](./general/session-summary.md)
-- [Missing Functions Task List](./general/missing-functions-task-list.md)
+
 
 ### Technical (Specifications & Design)
 - [Architecture Guide](./technical/architecture.md): Planned and current technical design
@@ -28,7 +28,7 @@ This documentation is organized to help contributors, developers, and users find
 ### Reference (APIs, Guides, Examples)
 - [Getting Started Guide](./getting-started.md): Basic setup and demo usage
 - [Troubleshooting Guide](./reference/troubleshooting-guide.md)
-- [Client Scripts Restoration](./reference/client-scripts-restoration.md)
+
 - [Security Grid Changelog](./reference/security-grid-changelog.md)
 - [Node-RED Documentation](https://nodered.org/docs/) - Official Node-RED documentation and API reference
 - [Examples](./reference/examples/)
