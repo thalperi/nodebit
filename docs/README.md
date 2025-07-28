@@ -17,7 +17,6 @@ This documentation is organized to help contributors, developers, and users find
 
 ### Technical (Specifications & Design)
 - [Architecture Guide](./technical/architecture.md): Planned and current technical design
-- [Functional Specification](./technical/functional.md): Feature requirements and status
 - [Node Roles](./technical/node-roles.md): Node types and responsibilities
 - [Files & Storage](./technical/files.md): File handling and storage details
 - [DID Management Guide](./technical/did-management-guide.md)

@@ -75,7 +75,8 @@
     "nodes": {
       "nb-workspace": "nodes/workspace/workspace.js",
       "nb-file": "nodes/file/file.js",
-      "nb-database": "nodes/database/database.js"
+      "nb-database": "nodes/database/database.js",
+      "nb-encrypt": "utils/encrypt.js"
     }
   },
   "jest": {

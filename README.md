@@ -48,6 +48,7 @@ npm install nodebit
 | **nb-workspace** | Configuration & Admin | ✅ Working | Central hub with phpMyAdmin-like interface |
 | **nb-file** | IPFS file operations | ✅ Demo | Upload, download, pin/unpin files |
 | **nb-database** | OrbitDB operations | ✅ Demo | Create, query, manage databases |
+| **nb-encrypt** | Encryption services | ✅ Optional | Encrypt/decrypt data in flows |
 
 ## 🖥️ Admin Interface Features
 
@@ -131,7 +132,7 @@ graph TB
 
 ### Personal Cloud Storage
 ```
-[File Upload] → [nb-file: encrypt & store] → [Share Link Generator]
+[File Upload] → [nb-encrypt: encrypt] → [nb-file: store] → [Share Link Generator]
 ```
 
 ### Distributed Database Application

@@ -127,3 +127,6 @@ out/
 # Documentation build
 docs/_build/
 docs/.doctrees/
+
+# Archive directory (old paradigm files for reference)
+archive/
