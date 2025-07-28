@@ -233,11 +233,21 @@ function generateClientScripts(workspaceId) {
         }
         
         function loadDatabases() {
-            console.log('Loading databases...');
+            // Log database loading attempt
+            fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'Loading databases...' })
+            });
         }
         
         function loadFiles() {
-            console.log('Loading files...');
+            // Log file loading attempt
+            fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'Loading files...' })
+            });
         }
         
         function loadSecurityData() {
