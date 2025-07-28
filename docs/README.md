@@ -43,6 +43,22 @@ This documentation is organized to help contributors, developers, and users find
 - **Reality:** If in doubt, assume a feature is incomplete
 - **Cross-Reference:** Links to main README for user-facing information
 
+## 🔍 Development Environment
+
+### Activity Logging System
+**CRITICAL:** Nodebit uses an internal activity logging system. **Never use `console.log()`** - all debugging and verification must use the workspace activity logging system.
+
+**Required logging pattern:**
+```javascript
+fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'Debug message here' })
+});
+```
+
+**Activity logs are checked via:** Workspace Properties → "Open Workspace Admin" → "Recent Activity" section
+
 ## ⚠️ Important Notice
 
 This is early-stage software. Many features are planned but not yet implemented. Only basic workspace functionality may exist. Use at your own risk and expect frequent changes.
