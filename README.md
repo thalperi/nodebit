@@ -7,7 +7,7 @@
 Nodebit transforms Node-RED into a comprehensive platform for decentralized data management. It combines the visual flow programming of Node-RED with the power of IPFS and OrbitDB, providing both programmatic access and a rich administrative interface.
 
 ### Core Capabilities
-- **📊 phpMyAdmin-like Admin Interface**: Comprehensive web UI for browsing networks, databases, and files
+- **📊 Distributed Dashboard**: Comprehensive web UI for browsing networks, databases, and files
 - **🗄️ OrbitDB Database Management**: Create, query, and manage decentralized databases
 - **📁 IPFS File Operations**: Upload, download, and manage files across IPFS networks
 - **🌐 Multi-Network Support**: Connect to multiple IPFS networks simultaneously
@@ -28,7 +28,7 @@ npm install nodebit
    - Go to hamburger menu → Configuration nodes
    - Add a new "nb-workspace" configuration
    - Give it a name like "My Workspace"
-3. **Access the Admin Interface**:
+3. **Access the Distributed Dashboard**:
    - In the workspace configuration, click "Open Workspace Admin"
    - Browse networks, databases, and files in the web interface
 
@@ -50,14 +50,15 @@ npm install nodebit
 | **nb-database** | OrbitDB operations | ✅ Demo | Create, query, manage databases |
 | **nb-encrypt** | Encryption services | ✅ Optional | Encrypt/decrypt data in flows |
 
-## 🖥️ Admin Interface Features
+## 🖥️ Distributed Dashboard Features
 
-The phpMyAdmin-like interface provides comprehensive management capabilities:
+The Distributed Dashboard provides comprehensive management capabilities with five main tabs:
 
-### 📊 Overview Dashboard
-- **Network Statistics**: Connected IPFS networks and peer counts
-- **Database Metrics**: OrbitDB instances, entry counts, storage usage
-- **File Management**: IPFS files, pin status, storage distribution
+### 📊 Workspace Overview
+- **IPFS Networks**: Connected networks and peer counts
+- **OrbitDB Databases**: Database instances, entry counts, storage usage
+- **IPFS Files**: File management, pin status, storage distribution
+- **Connected Peers**: Live peer connections and status
 - **Recent Activity**: Live feed of operations and changes
 
 ### 🌐 Networks Tab
@@ -96,7 +97,7 @@ graph TB
         DB[nb-database<br/>Database Operations]
     end
     
-    subgraph "Admin Interface"
+    subgraph "Distributed Dashboard"
         UI[phpMyAdmin-like Web UI]
         API[HTTP API Endpoints]
     end
@@ -116,7 +117,7 @@ graph TB
 
 ### Key Design Principles
 1. **Configuration Node Pattern**: nb-workspace acts as a shared configuration
-2. **Admin Interface Integration**: Web UI embedded in Node-RED
+2. **Distributed Dashboard Integration**: Web UI embedded in Node-RED
 3. **Resource Abstraction**: Work with files and databases, not protocols
 4. **Progressive Disclosure**: Simple tasks are simple, complex tasks are possible
 
@@ -154,7 +155,7 @@ graph TB
 
 ### ✅ Working Features
 - **Configuration Management**: Full workspace configuration with validation
-- **Admin Interface**: Complete phpMyAdmin-like web interface
+- **Distributed Dashboard**: Complete web interface for managing distributed data
 - **Demo Operations**: File upload/download and database operations with mock data
 - **Node-RED Integration**: Proper palette integration and flow composition
 - **HTTP API**: RESTful endpoints for programmatic access

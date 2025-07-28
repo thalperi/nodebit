@@ -17,7 +17,7 @@ This example demonstrates how to build a fully decentralized blog using Nodebit.
 ```mermaid
 graph TB
     subgraph "Author's Node-RED"
-        A1[HTTP Admin Interface]
+        A1[HTTP Distributed Dashboard]
         A2[nb-database: posts]
         A3[nb-file: images]
         A4[nb-security: signing]
@@ -83,7 +83,7 @@ nb-database config:
 - Write Access: [author-peer-id]
 ```
 
-### Create the Admin Interface
+### Create the Distributed Dashboard
 
 ```javascript
 // HTTP endpoint for blog admin

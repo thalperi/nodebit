@@ -4,7 +4,7 @@ This document explains Nodebit's current architecture, design principles, and im
 
 ## 🎯 Design Philosophy
 
-Nodebit is built around a **resource-centric** architecture that prioritizes user intent over technical complexity. Users work directly with files and databases through both programmatic flows and a comprehensive admin interface.
+Nodebit is built around a **resource-centric** architecture that prioritizes user intent over technical complexity. Users work directly with files and databases through both programmatic flows and a comprehensive distributed dashboard.
 
 ### Core Principles
 
@@ -13,7 +13,7 @@ Nodebit is built around a **resource-centric** architecture that prioritizes use
    - Operations are intuitive: "store this file" vs "connect to IPFS then add file"
    - Resources are the primary abstraction, not protocols
 
-2. **Admin Interface Integration**
+2. **Distributed Dashboard Integration**
    - phpMyAdmin-like web interface embedded in Node-RED
    - Comprehensive visibility into decentralized infrastructure
    - Real-time monitoring and management capabilities
@@ -55,11 +55,13 @@ graph TB
             DB[nb-database<br/>Database Operations]
         end
         
-        subgraph "Admin Interface"
+        subgraph "Distributed Dashboard"
             DASH[Distributed Data Dashboard]
-            NET[Networks Tab<br/>Accordion Interface]
+            OVER[Workspace Overview<br/>Statistics & Activity]
+            NET[Networks Tab<br/>IPFS Management]
+            DB[Databases Tab<br/>OrbitDB Management]
+            FILES[Files Tab<br/>IPFS File Operations]
             SEC[Security Tab<br/>DID/ACL Management]
-            ACT[Activity Log<br/>Expandable Rows]
         end
     end
     
@@ -74,9 +76,11 @@ graph TB
     WS --> ACL
     FILE --> WS
     DB --> WS
+    DASH --> OVER
     DASH --> NET
+    DASH --> DB
+    DASH --> FILES
     DASH --> SEC
-    DASH --> ACT
     WS --> HELIA
     WS --> KUBO
     HELIA --> ORBIT
@@ -97,7 +101,7 @@ graph TB
             DB[nb-database<br/>Database Operations]
         end
         
-        subgraph "Admin Interface"
+        subgraph "Distributed Dashboard"
             UI[Web UI<br/>phpMyAdmin-like]
             API[HTTP API<br/>RESTful Endpoints]
         end
@@ -134,7 +138,7 @@ graph TB
 
 ### nb-workspace (Configuration Node)
 
-The central hub that manages all decentralized resources and provides the admin interface.
+The central hub that manages all decentralized resources and provides the distributed dashboard.
 
 **Current Implementation:**
 ```javascript
@@ -162,12 +166,12 @@ function NodebitWorkspaceNode(config) {
 **Key Responsibilities:**
 - **Configuration Management**: Store workspace settings and preferences
 - **State Tracking**: Monitor workspace status and resource availability
-- **Admin Interface**: Serve phpMyAdmin-like web interface
+- **Distributed Dashboard**: Serve web interface for managing distributed data
 - **API Endpoints**: Provide RESTful access to workspace data
 - **Resource Coordination**: Manage connections between nodes
 
-**Admin Interface Features:**
-- **Overview Dashboard**: Statistics and recent activity
+**Distributed Dashboard Features:**
+- **Workspace Overview**: Central dashboard with statistics and recent activity
 - **Networks Tab**: IPFS network management and monitoring
 - **Databases Tab**: OrbitDB browser and query interface
 - **Files Tab**: IPFS file manager with pin control
@@ -241,14 +245,14 @@ node.mockDatabase.set(id, msg.payload);
 - **Delete**: Remove data
 - **Sync**: Coordinate with peers (planned)
 
-## 🌐 Admin Interface Architecture
+## 🌐 Distributed Dashboard Architecture
 
 ### Web Interface Structure
 
 The phpMyAdmin-like interface is served directly from the nb-workspace node:
 
 ```javascript
-// Main admin interface endpoint
+// Main distributed dashboard endpoint
 RED.httpAdmin.get('/nodebit/workspace/:id/admin', 
     RED.auth.needsPermission('nb-workspace.read'), 
     function(req, res) {
@@ -302,7 +306,7 @@ sequenceDiagram
     User->>NodeRED: Create nb-workspace config
     NodeRED->>Workspace: Initialize workspace
     Workspace->>Workspace: Start demo mode
-    User->>AdminUI: Open admin interface
+    User->>AdminUI: Open distributed dashboard
     AdminUI->>Workspace: Request data via API
     Workspace->>AdminUI: Return demo data
 ```
@@ -380,7 +384,7 @@ const databases = [
 
 **Node-RED Integration:**
 - Uses Node-RED's built-in authentication system
-- Respects Node-RED permissions for admin interface access
+- Respects Node-RED permissions for distributed dashboard access
 - Follows Node-RED security best practices
 
 **API Security:**
@@ -463,7 +467,7 @@ const networks = await discoverIPFSNodes();
 ### Backward Compatibility
 
 **API Stability:**
-- Admin interface API remains unchanged
+- Distributed dashboard API remains unchanged
 - Node-RED message formats stay consistent
 - Configuration options preserved
 
@@ -504,7 +508,7 @@ const networks = await discoverIPFSNodes();
 
 ```
 nodes/
-├── workspace/          # Configuration node + admin interface
+├── workspace/          # Configuration node + distributed dashboard
 │   ├── workspace.js   # Node logic + HTTP endpoints
 │   └── workspace.html # Configuration UI
 ├── file/              # File operations
@@ -520,7 +524,7 @@ nodes/
 **Plugin Architecture:**
 - Custom database types
 - Additional file operations
-- Extended admin interface features
+- Extended distributed dashboard features
 
 **API Extensions:**
 - Custom HTTP endpoints

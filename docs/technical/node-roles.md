@@ -17,7 +17,7 @@ graph TB
     subgraph "Configuration Nodes"
         WS[nb-workspace<br/>Shared Configuration]
     end
-    subgraph "Admin Interface"
+    subgraph "Distributed Dashboard"
         UI[Web UI]
         API[HTTP API Endpoints]
     end

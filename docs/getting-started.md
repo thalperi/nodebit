@@ -8,7 +8,7 @@ Welcome to Nodebit! This guide will help you get up and running with the basic i
 
 By the end of this guide, you'll be able to:
 - Set up and configure Nodebit workspaces
-- Use the basic admin interface
+- Use the basic distributed dashboard
 - Create Node-RED flows for file and database operations (demo mode)
 - Understand the demo mode and prepare for real implementation
 
@@ -70,13 +70,13 @@ By the end of this guide, you'll be able to:
      - **Auto-start**: ✓ (checked)
    - Click "Add" to save
 
-### Step 2: Access the Admin Interface
+### Step 2: Access the Distributed Dashboard
 
 1. **Open the Workspace Configuration:**
    - In the Config panel, find your "My First Workspace"
    - Click the edit button (pencil icon)
 
-2. **Launch the Admin Interface:**
+2. **Launch the Distributed Dashboard:**
    - In the workspace configuration dialog, you'll see an "Open Workspace Admin" button
    - Click it to open the basic interface in a new window
 
@@ -87,7 +87,22 @@ By the end of this guide, you'll be able to:
    - **Files Tab**: Manage IPFS files
    - **Query Builder Tab**: Future advanced querying (planned)
 
-## Understanding the Admin Interface
+## Understanding the Distributed Dashboard
+
+The Distributed Dashboard provides a comprehensive interface for managing decentralized data with five main tabs:
+
+### Tab Structure
+1. **Workspace Overview** - Central dashboard showing:
+   - IPFS Networks count and status
+   - OrbitDB Databases count and status  
+   - IPFS Files count and status
+   - Connected Peers count and status
+   - Recent Activity log with search and filtering
+
+2. **Networks** - IPFS network management and monitoring
+3. **Databases** - OrbitDB database operations and management
+4. **Files** - IPFS file operations and management
+5. **Security** - DID/ACL management and security features
 
 ### Overview Dashboard
 The overview provides a basic view of your decentralized infrastructure:
@@ -221,7 +236,7 @@ Now let's create flows that interact with your workspace:
    - Red ring: Error or no workspace configured
 
 2. **Admin Interface Updates:**
-   - The admin interface shows live data
+   - The distributed dashboard shows live data
    - Refresh tabs to see updated information
    - Statistics update automatically
 
@@ -255,7 +270,7 @@ Nodebit currently operates in **demo mode**, which means:
 
 ### Demo Benefits
 
-- **Interface Testing**: Explore the basic admin interface
+- **Interface Testing**: Explore the basic distributed dashboard
 - **Flow Development**: Build and test Node-RED flows
 - **Pattern Learning**: Understand how real operations will work
 - **UI Familiarity**: Get comfortable with the management interface
@@ -263,7 +278,7 @@ Nodebit currently operates in **demo mode**, which means:
 ### What Works in Demo Mode
 
 - 🔄 **Configuration Management**: Basic workspace setup, validation needs improvement
-- 🔄 **Admin Interface**: Basic interface, requires substantial development
+- 🔄 **Distributed Dashboard**: Basic interface, requires substantial development
 - 🔄 **Node-RED Integration**: Basic integration, needs enhancement
 - 🔄 **API Endpoints**: Limited endpoints, requires comprehensive implementation
 - ✅ **Status Monitoring**: Real-time status indicators and feedback
@@ -274,7 +289,7 @@ Nodebit currently operates in **demo mode**, which means:
 
 When real IPFS and OrbitDB integration is added:
 
-1. **Same Interface**: The admin interface will look identical
+1. **Same Interface**: The distributed dashboard will look identical
 2. **Same Flows**: Your Node-RED flows will work without changes
 3. **Real Data**: Operations will use actual IPFS and OrbitDB
 4. **Network Integration**: Connect to real IPFS networks and peers
@@ -318,7 +333,7 @@ When real IPFS and OrbitDB integration is added:
 - Check that the workspace is selected in your node configuration
 - Verify the workspace shows green status after deployment
 
-**Admin interface won't open:**
+**Distributed dashboard won't open:**
 - Make sure you've saved the workspace configuration first
 - Check that Node-RED is running and accessible
 - Verify there are no browser popup blockers preventing the window
@@ -338,7 +353,7 @@ When real IPFS and OrbitDB integration is added:
 ## You're Ready!
 
 You now have a working Nodebit installation with:
-- ✅ **Configured workspace** with admin interface access
+- ✅ **Configured workspace** with distributed dashboard access
 - ✅ **Working Node-RED flows** for file and database operations (demo mode)
 - ✅ **Understanding of demo mode** and future real implementation
 - ✅ **Foundation for building** decentralized applications

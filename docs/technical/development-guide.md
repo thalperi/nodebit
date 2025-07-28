@@ -60,7 +60,7 @@ npm link nodebit
 
 ### Testing
 - Use the activity logging system for all debugging
-- Check workspace admin interface for real-time feedback
+- Check workspace distributed dashboard for real-time feedback
 - Test node functionality through Node-RED flows
 
 ## 📁 Project Structure
@@ -92,7 +92,7 @@ nodebit/
 2. **Check Recent Activity** in workspace admin
 3. **Test through Node-RED flows** rather than direct API calls
 4. **Verify node configuration** through workspace properties
-5. **Monitor network connections** through admin interface
+5. **Monitor network connections** through distributed dashboard
 
 ## 📝 Code Standards
 
