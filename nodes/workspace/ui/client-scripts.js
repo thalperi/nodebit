@@ -189,6 +189,9 @@ function generateClientScripts(workspaceId) {
             fetch('/nodebit/workspace/' + workspaceId + '/api/networks')
             .then(response => response.json())
             .then(networks => {
+                // Store network data globally for copy functions
+                window.networkData = networks;
+                
                 const loadingElement = document.querySelector('#networks-panel .loading');
                 if (loadingElement) {
                     loadingElement.style.display = 'none';
@@ -200,16 +203,23 @@ function generateClientScripts(workspaceId) {
                     networksContainer.style.display = 'table';
                     const tbody = document.getElementById('networks-tbody');
                     if (tbody) {
-                        tbody.innerHTML = networks.map(network => 
-                            '<tr>' +
-                            '<td>' + (network.name || network.id) + '</td>' +
-                            '<td>' + network.type + '</td>' +
-                            '<td><span class="status-badge status-connected">' + network.status + '</span></td>' +
-                            '<td><code>' + (network.peerId || 'Unknown') + '</code></td>' +
-                            '<td>' + (network.peers || 0) + '</td>' +
-                            '<td><button class="btn btn-primary">Manage</button></td>' +
-                            '</tr>'
-                        ).join('');
+                                            tbody.innerHTML = networks.map((network, index) => 
+                        '<tr class="network-row" data-network-index="' + index + '" onclick="toggleNetworkPanel(' + index + ')">' +
+                        '<td>' + (network.name || network.id) + '</td>' +
+                        '<td>' + network.type + '</td>' +
+                        '<td><span class="status-badge status-connected">' + network.status + '</span></td>' +
+                        '<td><code>' + (network.peerId || 'Unknown') + '</code></td>' +
+                        '<td>' + (network.peers || 0) + '</td>' +
+                        '<td><button class="btn btn-primary" onclick="event.stopPropagation();">Manage</button></td>' +
+                        '</tr>' +
+                        '<tr class="management-panel" id="network-panel-' + index + '">' +
+                        '<td colspan="6">' +
+                        '<div class="management-content">' +
+                        generateNetworkDetailsPanel(network, index) +
+                        '</div>' +
+                        '</td>' +
+                        '</tr>'
+                    ).join('');
                     }
                 }
                 
@@ -339,7 +349,7 @@ function generateClientScripts(workspaceId) {
                         (did.id || '').replace(/^did:/, '').replace(/^nodebit:/, '').replace(/^user-/, '');
                     
                     return '<div class="did-row" data-did-index="' + index + '">' +
-                           '<div style="display:grid; grid-template-columns:84px 70px 1fr 50px; gap:8px; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; font-size:11px; cursor:pointer; overflow:hidden;" onclick="toggleDIDPanel(' + index + ')">' +
+                           '<div style="display:grid; grid-template-columns:70px 70px 1fr 50px; gap:6px; align-items:center; padding:6px 8px; border-bottom:1px solid #eee; font-size:11px; cursor:pointer; overflow:hidden;" onclick="toggleDIDPanel(' + index + ')">' +
                            '<div style="color:#2c3e50; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + username + '">' + username + '</div>' +
                            '<div style="color:#666; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + createdDate + '">' + createdDate + '</div>' +
                            '<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:monospace; color:#2c3e50;" title="' + did.id + '">' +
@@ -765,6 +775,194 @@ function generateClientScripts(workspaceId) {
                 // Trigger search to show all DIDs again
                 loadDIDs();
             }
+        }
+        
+        function toggleNetworkPanel(index) {
+            const row = document.querySelector('[data-network-index="' + index + '"]');
+            const panel = document.getElementById('network-panel-' + index);
+            
+            if (row && panel) {
+                const isExpanded = panel.style.display === 'table-row';
+                
+                // Close all other panels first
+                document.querySelectorAll('.management-panel').forEach(p => {
+                    p.style.display = 'none';
+                });
+                document.querySelectorAll('.network-row').forEach(r => {
+                    r.classList.remove('expanded');
+                });
+                
+                if (!isExpanded) {
+                    panel.style.display = 'table-row';
+                    row.classList.add('expanded');
+                }
+            }
+        }
+        
+        function generateNetworkDetailsPanel(network, index) {
+            const networkType = network.type || 'unknown';
+            const peerId = network.peerId || 'Unknown';
+            const addresses = network.addresses || [];
+            const peers = network.peers || 0;
+            
+            let detailsHtml = '<div style="font-size:12px; color:#666; max-height:400px; overflow-y:auto;">';
+            detailsHtml += '<h4 style="margin:0 0 10px 0; color:#2c3e50;">Network Details</h4>';
+            
+            detailsHtml += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:15px;">';
+            
+            // Left column - Basic info
+            detailsHtml += '<div>';
+            detailsHtml += '<strong>Network Type:</strong> ' + networkType + '<br>';
+            detailsHtml += '<strong>Peer ID:</strong> <code style="font-size:10px;">' + peerId + '</code><br>';
+            detailsHtml += '<strong>Status:</strong> <span class="status-badge status-connected">' + network.status + '</span><br>';
+            detailsHtml += '<strong>Connected Peers:</strong> ' + peers + '<br>';
+            detailsHtml += '</div>';
+            
+            // Right column - Addresses with scrollable list and copy buttons
+            detailsHtml += '<div>';
+            detailsHtml += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">';
+            detailsHtml += '<strong>Network Addresses:</strong>';
+            if (addresses.length > 0) {
+                detailsHtml += '<div style="display:flex; gap:4px;">';
+                detailsHtml += '<button onclick="event.stopPropagation(); copyNetworkAddresses(' + index + ', \\'json\\')" class="btn" style="font-size:10px; padding:2px 6px; background:#28a745; color:white;">JSON</button>';
+                detailsHtml += '<button onclick="event.stopPropagation(); copyNetworkAddresses(' + index + ', \\'text\\')" class="btn" style="font-size:10px; padding:2px 6px; background:#17a2b8; color:white;">Text</button>';
+                detailsHtml += '<button onclick="event.stopPropagation(); copyNetworkAddresses(' + index + ', \\'xml\\')" class="btn" style="font-size:10px; padding:2px 6px; background:#6f42c1; color:white;">XML</button>';
+                detailsHtml += '</div>';
+            }
+            detailsHtml += '</div>';
+            
+            if (addresses.length > 0) {
+                detailsHtml += '<div style="max-height:120px; overflow-y:auto; border:1px solid #ddd; border-radius:3px; padding:5px; background:#f8f9fa; max-width:100px; width:100%; overflow-x:hidden; box-sizing:border-box; word-wrap:break-word;">';
+                addresses.forEach(addr => {
+                    detailsHtml += '<code style="font-size:10px; display:block; margin:2px 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; box-sizing:border-box;" title="' + addr + '">' + addr + '</code>';
+                });
+                detailsHtml += '</div>';
+            } else {
+                detailsHtml += '<span style="color:#999; font-style:italic;">No addresses available</span>';
+            }
+            detailsHtml += '</div>';
+            
+            detailsHtml += '</div>';
+            
+            // Management actions
+            detailsHtml += '<div style="border-top:1px solid #eee; padding-top:10px; margin-top:10px;">';
+            detailsHtml += '<h5 style="margin:0 0 8px 0; color:#2c3e50;">Management Actions</h5>';
+            detailsHtml += '<div style="display:flex; gap:8px;">';
+            detailsHtml += '<button class="btn btn-primary" onclick="event.stopPropagation();" style="font-size:11px;">Refresh Status</button>';
+            detailsHtml += '<button class="btn" onclick="event.stopPropagation();" style="font-size:11px; background:#6c757d; color:white;">View Logs</button>';
+            if (networkType === 'kubo') {
+                detailsHtml += '<button class="btn" onclick="event.stopPropagation();" style="font-size:11px; background:#dc3545; color:white;">Disconnect</button>';
+            }
+            detailsHtml += '</div>';
+            detailsHtml += '</div>';
+            
+            detailsHtml += '</div>';
+            
+            return detailsHtml;
+        }
+        
+        function copyNetworkAddresses(networkIndex, format) {
+            const network = window.networkData ? window.networkData[networkIndex] : null;
+            if (!network || !network.addresses || network.addresses.length === 0) {
+                return;
+            }
+            
+            let content = '';
+            const addresses = network.addresses;
+            
+            switch (format) {
+                case 'json':
+                    content = JSON.stringify({
+                        network: network.name || network.id,
+                        type: network.type,
+                        addresses: addresses
+                    }, null, 2);
+                    break;
+                case 'text':
+                    content = addresses.join('\\n');
+                    break;
+                case 'xml':
+                    content = '<?xml version="1.0" encoding="UTF-8"?>' + '\\n';
+                    content += '<network>' + '\\n';
+                    content += '  <name>' + (network.name || network.id) + '</name>' + '\\n';
+                    content += '  <type>' + network.type + '</type>' + '\\n';
+                    content += '  <addresses>' + '\\n';
+                    addresses.forEach(addr => {
+                        content += '    <address>' + addr + '</address>' + '\\n';
+                    });
+                    content += '  </addresses>' + '\\n';
+                    content += '</network>';
+                    break;
+            }
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(content).then(() => {
+                // Log success to activity
+                fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Copied network addresses to clipboard (' + format.toUpperCase() + ' format)' })
+                });
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Log success to activity
+                fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Copied network addresses to clipboard (' + format.toUpperCase() + ' format) - fallback method' })
+                });
+            });
+        }
+        
+        function copyAllActivities() {
+            if (!displayedActivities || displayedActivities.length === 0) {
+                return;
+            }
+            
+            // Create CSV format of displayed activities
+            const csvContent = displayedActivities.map(activity => {
+                const time = new Date(activity.timestamp).toLocaleString();
+                const level = activity.level || activity.type || 'info';
+                const message = activity.message || '';
+                const data = activity.data || '';
+                
+                return '"' + time + '","' + level + '","' + message.replace(/"/g, '""') + '","' + data.replace(/"/g, '""') + '"';
+            }).join('\\n');
+            
+            const header = 'Timestamp,Level,Message,Data\\n';
+            const fullContent = header + csvContent;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(fullContent).then(() => {
+                // Log success to activity
+                fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Copied all displayed activities to clipboard (CSV format)' })
+                });
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = fullContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Log success to activity
+                fetch('/nodebit/workspace/' + workspaceId + '/api/test-log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Copied all displayed activities to clipboard (CSV format) - fallback method' })
+                });
+            });
         }
 
         // Initialize dashboard when page loads

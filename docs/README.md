@@ -8,6 +8,12 @@
 - Maintain professional, direct communication focused on facts
 - Respect established documentation structure and organization
 - Throughout the entire development lifecycle, always propose modifications to the documentation structure affecting even folders, files, logical layout, and compositional formatting, to ensure it always best reflects the current and actual codebase
+- **Testing Capability**: You can start and manage your own Node-RED instance on port 1881 for testing purposes, as the user will always occupy the default port 1880. Use this dedicated testing environment to:
+  - Start `node-red -p 1881` when needed for testing
+  - Use API endpoints to test functionality and verify changes
+  - Kill the instance when testing is complete
+  - Leverage curl commands and other API tools to validate dashboard features, theming, and functionality
+  - Test nodebit nodes and workspace functionality without interfering with the user's development workflow
 
 ---
 
@@ -22,10 +28,9 @@ This documentation is organized to help contributors, developers, and users find
 ## 📚 Documentation Structure
 
 ### General (Project Management & Development)
-- [Development Status](./general/development-status.md): Honest assessment of what works and what doesn't
-- [TODO List](./general/todo.md): Ongoing and planned tasks
-- [WIP Notes](./general/wip.md): Work-in-progress, session notes, and planning
-- [Session Notes](./general/session.md), [Session Summaries](./general/session-summary.md)
+- [Status](./general/status.md): Current system status and what actually works
+- [Tasks](./general/tasks.md): What needs to be done and current priorities
+- [Session](./general/session.md): Current session focus and immediate context
 
 
 ### Technical (Specifications & Design)

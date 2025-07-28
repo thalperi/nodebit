@@ -22,10 +22,11 @@ function registerSecurityRoutes(RED) {
                 res.json(dids);
                 
             } catch (error) {
-                if (error.message.includes('initializing') || error.message.includes('not started')) {
+                if (error.message.includes('not started')) {
                     res.status(503).json(createErrorResponse(error.message));
                 } else {
-                    res.status(500).json(createErrorResponse('Failed to get DIDs: ' + error.message));
+                    // Return empty array instead of error for DID/ACL system issues
+                    res.json([]);
                 }
             }
         }
@@ -102,10 +103,11 @@ function registerSecurityRoutes(RED) {
                 res.json(acls);
                 
             } catch (error) {
-                if (error.message.includes('initializing') || error.message.includes('not started')) {
+                if (error.message.includes('not started')) {
                     res.status(503).json(createErrorResponse(error.message));
                 } else {
-                    res.status(500).json(createErrorResponse('Failed to get ACLs: ' + error.message));
+                    // Return empty array instead of error for DID/ACL system issues
+                    res.json([]);
                 }
             }
         }

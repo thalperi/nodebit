@@ -45,12 +45,12 @@ function generateWorkspaceHTML(workspaceId, workspaceName) {
 function generateBaseStyles() {
     return `
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; font-size: 13px; height: 100vh; overflow: hidden; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 8px; height: calc(100vh - 16px); display: flex; flex-direction: column; }
-        .nav-tabs { background: white; border-radius: 8px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .nav-tab { display: inline-block; padding: 12px 20px; cursor: pointer; border-bottom: 3px solid transparent; font-size: 13px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 8px; height: calc(100vh - 16px); display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 8px; }
+        .nav-tabs { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: grid; grid-template-columns: repeat(5, 1fr); }
+        .nav-tab { padding: 12px 20px; cursor: pointer; border-bottom: 3px solid transparent; font-size: 13px; text-align: center; }
         .nav-tab.active { background: #3498db; color: white; border-bottom-color: #2980b9; }
         .nav-tab:hover:not(.active) { background: #ecf0f1; }
-        .content-panel { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex: 1; min-height: 0; overflow: hidden; }
+        .content-panel { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: grid; grid-template-columns: 1fr; grid-template-rows: auto 1fr; gap: 0; overflow: hidden; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; min-width: 0; }
         .stat-card { background: linear-gradient(135deg, #85c1e9, #5dade2); color: white; border-radius: 8px; text-align: center; min-width: 0; }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
@@ -58,6 +58,12 @@ function generateBaseStyles() {
         .data-table th { background: #f8f9fa; font-weight: 600; font-size: 12px; }
         .data-table tr:hover { background: #f8f9fa; }
         .data-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .did-list-container { overflow: hidden; }
+        .did-list-container .did-row { overflow: hidden; }
+        #dids-container { overflow-x: hidden; }
+        .did-management-area { overflow: hidden; }
+        .did-list-container * { overflow-x: hidden; }
+        .did-management-area * { overflow-x: hidden; }
         .data-table td.peer-id { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .data-table td.network-name { white-space: nowrap; overflow: hidden; }
         .activity-message { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; max-width: 100%; }
@@ -94,11 +100,11 @@ function generateNavigationTabs() {
 
 function generateNetworksPanel() {
     return `
-        <div id="networks-panel" class="content-panel" style="display:none;">
+        <div id="networks-panel" class="content-panel" style="display:none; height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
             <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
                 <h3 style="margin:0; font-size:16px;">IPFS Networks</h3>
             </div>
-            <div style="padding:8px;">
+            <div style="padding:8px; display:grid; grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:8px; min-height:0;">
                 <div class="loading">Loading networks...</div>
                 <table class="data-table" id="networks-table" style="display:none; font-size:13px; table-layout:fixed; width:100%;">
                 <thead>
@@ -121,11 +127,11 @@ function generateNetworksPanel() {
 
 function generateDatabasesPanel() {
     return `
-        <div id="databases-panel" class="content-panel" style="display:none;">
+        <div id="databases-panel" class="content-panel" style="display:none; height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
             <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
                 <h3 style="margin:0; font-size:16px;">OrbitDB Databases</h3>
             </div>
-            <div style="padding:8px;">
+            <div style="padding:8px; display:grid; grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:8px; min-height:0;">
                 <div style="padding:10px; background:#f8f9fa; border-radius:4px; font-size:13px; color:#666;">
                     Database discovery not yet implemented
                 </div>
@@ -136,11 +142,11 @@ function generateDatabasesPanel() {
 
 function generateFilesPanel() {
     return `
-        <div id="files-panel" class="content-panel" style="display:none;">
+        <div id="files-panel" class="content-panel" style="display:none; height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
             <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
                 <h3 style="margin:0; font-size:16px;">IPFS Files</h3>
             </div>
-            <div style="padding:8px;">
+            <div style="padding:8px; display:grid; grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:8px; min-height:0;">
                 <div style="padding:10px; background:#f8f9fa; border-radius:4px; font-size:13px; color:#666;">
                     File discovery not yet implemented
                 </div>

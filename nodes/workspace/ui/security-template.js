@@ -4,8 +4,8 @@
 
 function generateSecurityTemplate() {
     return `
-        <div id="security-panel" class="content-panel" style="display:none; height:100%; max-height:100%; flex-direction:column; background:white; border-radius:8px; overflow:hidden;">
-            <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0; flex-shrink:0;">
+        <div id="security-panel" class="content-panel" style="display:none; height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
+            <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
                 <h3 style="margin:0; font-size:16px;">Security Management</h3>
             </div>
             
@@ -16,7 +16,8 @@ function generateSecurityTemplate() {
                 gap: 12px;
                 padding: 12px;
                 background: #f8f9fa;
-                min-height: calc(100vh - 200px);
+                flex: 1;
+                min-height: 0;
                 overflow-y: auto;
             ">
                 ${generateDIDManagementArea()}
@@ -30,7 +31,7 @@ function generateSecurityTemplate() {
 function generateDIDManagementArea() {
     return `
         <!-- DID Management Area - Grid Position: Column 1, Row 1 -->
-        <div class="did-management-area" style="grid-column: 1; grid-row: 1; min-height: 720px;">
+        <div class="did-management-area" style="grid-column: 1; grid-row: 1; min-height: 720px; overflow: hidden;">
             ${generateDIDContainer()}
         </div>
     `;
@@ -56,7 +57,7 @@ function generateACLManagementArea() {
 
 function generateDIDContainer() {
     return `
-        <div style="background:#fff; border:1px solid #ddd; border-radius:4px; display:grid; grid-template-rows:auto auto 1fr; height:100%;">
+        <div style="background:#fff; border:1px solid #ddd; border-radius:4px; display:grid; grid-template-rows:auto auto 1fr; height:100%; overflow:hidden;">
             <div style="background:#f8f9fa; padding:8px 12px; border-bottom:1px solid #ddd; font-weight:bold; font-size:14px;">
                 <i class="fa fa-id-card" style="margin-right:6px;"></i>Decentralized Identifiers (DIDs)
             </div>
@@ -85,8 +86,8 @@ function generateDIDCreationForm() {
 
 function generateDIDList() {
     return `
-        <div id="dids-container" style="overflow-y:auto; border:1px solid #eee; border-radius:3px; min-width:0; display:grid; grid-template-rows:auto 1fr; height:100%;">
-            <div style="padding:4px 8px; background:#f8f9fa; border-bottom:1px solid #ddd; font-size:11px; font-weight:bold; display:grid; grid-template-columns:84px 70px 1fr 50px; gap:8px; align-items:center; min-width:0; width:100%;">
+        <div id="dids-container" style="overflow-y:auto; overflow-x:hidden; border:1px solid #eee; border-radius:3px; min-width:0; width:100%; display:grid; grid-template-rows:auto 1fr; height:100%;">
+            <div style="padding:4px 8px; background:#f8f9fa; border-bottom:1px solid #ddd; font-size:11px; font-weight:bold; display:grid; grid-template-columns:70px 70px 1fr 50px; gap:6px; align-items:center; min-width:0; width:100%; overflow:hidden;">
                 <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">User</div>
                 <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Created</div>
                 <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Identifier</div>

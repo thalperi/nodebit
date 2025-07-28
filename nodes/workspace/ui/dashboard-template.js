@@ -4,12 +4,12 @@
 
 function generateDashboardTemplate() {
     return `
-        <div id="overview-panel" class="content-panel" style="height:100%; max-height:100%; display:flex; flex-direction:column; background:white; border-radius:8px; overflow:hidden;">
+        <div id="overview-panel" class="content-panel" style="height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
             <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
                 <h3 style="margin:0; font-size:16px;">Workspace Overview</h3>
             </div>
             
-            <div style="padding:8px; flex:1; display:flex; flex-direction:column; min-height:0;">
+            <div style="padding:8px; display:grid; grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:12px; min-height:0;">
                 ${generateStatsGrid()}
                 ${generateActivitySection()}
             </div>

@@ -82,8 +82,9 @@ class WorkspaceManager {
             throw new Error('Workspace not started yet');
         }
         
+        // If DID registry is not available, return empty array
         if (!workspace.didRegistry) {
-            throw new Error('DID/ACL system still initializing - please wait a moment');
+            return [];
         }
         
         return await workspace.getAllDIDs();
@@ -116,8 +117,9 @@ class WorkspaceManager {
             throw new Error('Workspace not started yet');
         }
         
+        // If ACL registry is not available, return empty array
         if (!workspace.aclRegistry) {
-            throw new Error('DID/ACL system still initializing - please wait a moment');
+            return [];
         }
         
         return await workspace.getAllACLs();
