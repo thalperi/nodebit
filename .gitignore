@@ -109,6 +109,8 @@ mcp.json
 *.orbitdb
 keystore/
 system-orbitdb/
+orbitdb/
+**/orbitdb/
 
 # Large binary files
 *.tar.gz
