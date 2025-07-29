@@ -263,6 +263,26 @@ function generateClientScripts(workspaceId) {
         function loadSecurityData() {
             loadDIDs();
             loadSystemStatus();
+            startWidthMonitoring();
+        }
+        
+        function startWidthMonitoring() {
+            // Monitor DID grid width and display it
+            const updateWidth = () => {
+                const didGrid = document.querySelector('#security-panel > div > div:first-child');
+                const widthSpan = document.getElementById('did-grid-width');
+                if (didGrid && widthSpan) {
+                    const width = didGrid.offsetWidth;
+                    widthSpan.textContent = 'w:' + width + 'px';
+                }
+            };
+            
+            // Update immediately and then on window resize
+            updateWidth();
+            window.addEventListener('resize', updateWidth);
+            
+            // Also update periodically to catch any dynamic changes
+            setInterval(updateWidth, 1000);
         }
         
         function loadSystemStatus() {

@@ -4,14 +4,12 @@
 
 function generateDashboardTemplate() {
     return `
-        <div id="overview-panel" class="content-panel" style="height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden;">
-            <div style="background:#3498db; color:white; padding:8px 12px; border-radius:8px 8px 0 0;">
-                <h3 style="margin:0; font-size:16px;">Workspace Overview</h3>
-            </div>
-            
-            <div style="padding:8px; display:grid; grid-template-columns:1fr; grid-template-rows:auto 1fr; gap:12px; min-height:0;">
+        <div id="overview-panel" class="content-panel" style="height:100%; max-height:100%; background:white; border-radius:8px; overflow:hidden; display:grid; grid-template-rows:auto 1fr; grid-template-columns:1fr;">
+            <div class="overview-main-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); grid-template-rows:auto 1fr; gap:16px; width:100%; height:100%; min-height:0; padding:16px; box-sizing:border-box;">
                 ${generateStatsGrid()}
-                ${generateActivitySection()}
+                <div style="grid-column:1 / span 4; min-height:0; display:flex; flex-direction:column;">
+                    ${generateActivitySection()}
+                </div>
             </div>
         </div>
     `;
@@ -19,23 +17,21 @@ function generateDashboardTemplate() {
 
 function generateStatsGrid() {
     return `
-        <div class="stats-grid">
-            <div class="stat-card" style="padding:12px;">
-                <div style="font-size:1.5em;" id="networks-count">-</div>
-                <div style="font-size:12px;">IPFS Networks</div>
-            </div>
-            <div class="stat-card" style="padding:12px;">
-                <div style="font-size:1.5em;" id="databases-count">-</div>
-                <div style="font-size:12px;">OrbitDB Databases</div>
-            </div>
-            <div class="stat-card" style="padding:12px;">
-                <div style="font-size:1.5em;" id="files-count">-</div>
-                <div style="font-size:12px;">IPFS Files</div>
-            </div>
-            <div class="stat-card" style="padding:12px;">
-                <div style="font-size:1.5em;" id="peers-count">-</div>
-                <div style="font-size:12px;">Connected Peers</div>
-            </div>
+        <div class="stat-card" style="padding:16px; background:linear-gradient(135deg, #85c1e9, #5dade2); color:white; border-radius:8px; text-align:center; min-width:0;">
+            <div style="font-size:1.5em;" id="networks-count">-</div>
+            <div style="font-size:12px;">IPFS Networks</div>
+        </div>
+        <div class="stat-card" style="padding:16px; background:linear-gradient(135deg, #85c1e9, #5dade2); color:white; border-radius:8px; text-align:center; min-width:0;">
+            <div style="font-size:1.5em;" id="databases-count">-</div>
+            <div style="font-size:12px;">OrbitDB Databases</div>
+        </div>
+        <div class="stat-card" style="padding:16px; background:linear-gradient(135deg, #85c1e9, #5dade2); color:white; border-radius:8px; text-align:center; min-width:0;">
+            <div style="font-size:1.5em;" id="files-count">-</div>
+            <div style="font-size:12px;">IPFS Files</div>
+        </div>
+        <div class="stat-card" style="padding:16px; background:linear-gradient(135deg, #85c1e9, #5dade2); color:white; border-radius:8px; text-align:center; min-width:0;">
+            <div style="font-size:1.5em;" id="peers-count">-</div>
+            <div style="font-size:12px;">Connected Peers</div>
         </div>
     `;
 }
@@ -100,6 +96,47 @@ function generateActivityContainer() {
         <div id="activity-container" style="background:#f8f9fa; border-radius:4px; flex:1; overflow-y:auto; min-height:200px; border:1px solid #e9ecef;">
             <div id="activity-list" style="font-size:12px;">
                 <div style="padding:10px; color:#666; text-align:center;">Loading activity...</div>
+            </div>
+        </div>
+    `;
+}
+
+function generateOverviewSystemStatusCard() {
+    return `
+        <div style="background:#fff; border:1px solid #ddd; border-radius:4px;">
+            <div style="background:#f8f9fa; padding:8px 12px; border-bottom:1px solid #ddd; font-weight:bold; font-size:14px;">
+                <i class="fa fa-cogs" style="margin-right:6px;"></i>System Status
+            </div>
+            <div style="padding:10px; font-size:12px;">
+                <div style="margin-bottom:8px;">
+                    <strong>Workspace State:</strong> <span id="workspace-status" style="color:#27ae60;">Loading...</span>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <strong>IPFS Networks:</strong> <span id="networks-count-sidebar">-</span>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <strong>OrbitDB Databases:</strong> <span id="databases-count-sidebar">-</span>
+                </div>
+                <div style="margin-bottom:8px;">
+                    <strong>IPFS Files:</strong> <span id="files-count-sidebar">-</span>
+                </div>
+                <div>
+                    <strong>Connected Peers:</strong> <span id="peers-count-sidebar">-</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateOverviewInfoCard() {
+    return `
+        <div style="background:#fff; border:1px solid #ddd; border-radius:4px; flex:1;">
+            <div style="background:#f8f9fa; padding:8px 12px; border-bottom:1px solid #ddd; font-weight:bold; font-size:14px;">
+                <i class="fa fa-info-circle" style="margin-right:6px;"></i>Workspace Info
+            </div>
+            <div style="padding:10px; font-size:11px; line-height:1.4; color:#666;">
+                <p><strong>Overview:</strong> This dashboard provides a summary of your distributed workspace, including network, database, file, and peer statistics, as well as recent activity.</p>
+                <p><strong>Tip:</strong> Use the navigation tabs above to explore networks, databases, files, and security settings.</p>
             </div>
         </div>
     `;
