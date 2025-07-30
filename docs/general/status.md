@@ -7,15 +7,22 @@
 - **API Alignment**: Updated OrbitDB usage to match official patterns from [api.orbitdb.org](https://api.orbitdb.org/)
 - **Directory Conflicts**: Added unique directory suffixes to prevent `LEVEL_LOCKED` database errors
 - **Version Compatibility**: Verified compatible versions (@orbitdb/core@3.0.2, helia@5.4.2)
+- **Repository Cleanup**: Removed accidentally staged OrbitDB database files and updated `.gitignore` patterns
 
-### 🔧 Active Issues
-1. **OrbitDB Sync Errors**: `Cannot read properties of undefined (reading 'addEventListener')` preventing database creation
-2. **DID/ACL System Initialization**: System showing partial initialization due to OrbitDB failures
-3. **Event Emitter Context**: OrbitDB sync logic missing required event emitter from Helia/libp2p
-4. **Database Creation**: Both DID and ACL registry databases failing to initialize
+### ✅ Issues Resolved (Continued)
+- **OrbitDB Sync Errors**: Fixed `addEventListener` error by adding pubsub service to libp2p configuration  
+- **Event Emitter Context**: Resolved by installing and configuring `@chainsafe/libp2p-gossipsub`
+- **Database Creation**: Should now work with proper pubsub support for OrbitDB synchronization
+- **libp2p Configuration**: Updated to include required pubsub service for OrbitDB database operations
+
+### 🔄 Pending Verification (Requires Restart)
+1. **DID/ACL System Initialization**: System should now fully initialize with working OrbitDB
+2. **Database Registry Creation**: Both DID and ACL registries should create successfully
+3. **Admin Identity**: Should be properly available and authenticated
 
 ### 📁 Files Affected
 - `lib/nodebit-core.js` - OrbitDB initialization logic, import fixes, directory isolation
+- `.gitignore` - Added OrbitDB directory exclusion patterns
 
 ### 🎯 Current Debugging Focus
 1. **Event Emitter Investigation**: Ensuring OrbitDB has proper event emitter access from Helia

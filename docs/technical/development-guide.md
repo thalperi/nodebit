@@ -70,6 +70,10 @@ console.log('This will not be visible in the activity log');
 4. **Version Verification** ✅
    - Confirmed compatible versions: `@orbitdb/core@3.0.2`, `helia@5.4.2`
 
+5. **Repository Cleanup** ✅
+   - Removed accidentally staged OrbitDB database files from git
+   - Updated `.gitignore` with proper OrbitDB directory exclusion patterns
+
 ### Current Investigation Areas
 
 1. **Event Emitter Context**
@@ -106,6 +110,7 @@ curl -s http://localhost:1880/flows | grep -oE 'nb-workspace_[a-zA-Z0-9]+' | hea
 - **`lib/nodebit-core.js`** - Lines 935-1040: `_initializeDIDACLSystem()` method
 - **Error Location**: `/node_modules/@orbitdb/core/src/sync.js:283` - `addEventListener` call
 - **Network Creation**: Lines 587-660: Helia instance creation and readiness checks
+- **`.gitignore`**: Lines 1-10: OrbitDB database directory exclusion patterns
 
 ### Documentation Resources
 
