@@ -1,6 +1,6 @@
 # Nodebit Workspace Initialization Workflow
 
-This document details the full technical workflow for initializing a Nodebit workspace—from the moment a user presses the **Add** button on the "Add new nb-workspace config node" form, through Helia and OrbitDB setup, to the first successful "Resource discovery completed" record in the internal log. It is based on a post-inspection code audit and includes TODO annotations for areas needing further development.
+This document details the full technical workflow for initializing a Nodebit workspace.
 
 ---
 
