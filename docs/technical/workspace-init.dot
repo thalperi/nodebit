@@ -1,0 +1,22 @@
+digraph NodebitInit {
+    rankdir=TB;
+    node [shape=box, style=rounded];
+    A [label="User presses Add on nb-workspace config node form"];
+    B [label="Node-RED creates nb-workspace config node"];
+    C [label="NodebitWorkspace instance created"];
+    D [label="Workspace autoStart triggers start sequence"];
+    E [label="Ensure data directory exists"];
+    F [label="Detect Kubo nodes (optional)"];
+    G [label="Create local Helia network"];
+    H [label="Create OrbitDB instance for local network"];
+    I [label="Initialize DID/ACL system"];
+    J [label="Create persistent keystore and system identity"];
+    K [label="Create system OrbitDB for DID/ACL"];
+    L [label="Create DID registry database"];
+    M [label="Create ACL registry database"];
+    N [label="Add admin identity to authenticated DIDs"];
+    O [label="Start resource discovery"];
+    P [label="Discover resources in all networks"];
+    Q [label="Emit 'Resource discovery completed' log"];
+    A -> B -> C -> D -> E -> F -> G -> H -> I -> J -> K -> L -> M -> N -> O -> P -> Q;
+} 
